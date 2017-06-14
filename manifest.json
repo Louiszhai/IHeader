@@ -1,0 +1,36 @@
+{
+  "name": "IHeader",
+  "version": "1.0.0",
+  "icons": {
+      "128": "res/images/lightning_green128.png",
+      "32": "res/images/lightning_green.png",
+      "64": "res/images/lightning_green64.png"
+   },
+  "page_action": {
+    "default_title": "IHeader",
+    "default_icon": "res/images/lightning_default.png",
+    "default_popup": "res/index.html"
+  },
+  "background": {
+    "persistent": true,
+    "scripts": ["res/js/message.js", "res/js/background.js"]
+  },
+  "commands": {
+    "toggle_status": {
+      "suggested_key": { "default": "Alt+H" },
+      "description": "Toggle cache"
+    }
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "matches": ["\u003Call_urls>"],
+      "js": ["res/js/message.js", "res/js/content.js"]
+    }
+  ],
+  "default_locale": "en",
+  "description": "__MSG_description__",
+  "manifest_version": 2,
+  "options_page": "res/options.html",
+  "permissions": [ "tabs" , "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "contextMenus"]
+}

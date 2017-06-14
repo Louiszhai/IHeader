@@ -1,0 +1,29 @@
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin: 0px 0.4em 0.3em 0px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#FCFCFC, #DADADA);
+  -webkit-appearance: none;
+  -webkit-transition: box-shadow 200ms;
+  box-shadow: inset 1px 1px 0px #fff, 0 1px 1px rgba(0,0,0,0.1);
+}
+input[type="checkbox"]:checked:before {
+  color: rgba(0, 0, 0, 0.7);
+  content: '\2713';
+  margin-left: 20%;
+}
+input[type="checkbox"]:not(:disabled):hover {
+  border-color: rgba(0,0,0,0.5);
+  box-shadow: inset 1px 1px 0px #fff, 0px 0px 4px rgba(0,0,0,0.3);
+}
+input[type="checkbox"]:focus {
+  outline: none;
+}
+input[type="checkbox"]:active:not(:disabled) {
+  background-image: -webkit-linear-gradient(#C2C2C2, #EFEFEF);
+  box-shadow: inset 1px 1px 0 rgba(0,0,0,0.2), inset -1px -1px 0px rgba(255,255,255,0.6);
+  border-color: rgba(0,0,0,0.5);
+}

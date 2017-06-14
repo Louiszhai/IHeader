@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="./images/lightning_green.png">
+  <link rel="stylesheet" type="text/css" href="./css/waves.min.css?v=0.7.5">
+  <title>IHeader</title>
+  <style>
+    ::-webkit-scrollbar {width:6px;height:10px;}
+    ::-webkit-scrollbar-thumb {background-color: #FFDEAD;border-radius: 5px;}
+    ::-webkit-scrollbar-thumb:hover{background-color: #F4A460;transition:background 2s;}
+    
+    body {
+      margin: 0;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      height: 50px;
+      padding-left: 12px;
+      background-color: #88C741;
+      box-shadow: 0px 1px 8px #abd27f;
+      font-size: 18px;
+      line-height: 50px;
+    }
+    .search, .listener-search {
+      width: 120px;
+      height: 16px;
+      margin-left: 50px;
+      padding: 3px 9px;
+      background-color: #70b522;
+      border-radius: 3px;
+      border:0 none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.15);
+      font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      font-size: 12px;
+      font-weight: normal;
+      line-height: 1;
+      color: #FFFFFF;
+      transition: width .5s;
+      vertical-align: middle;
+    }
+    .search:focus, .listener-search:focus {
+      width: 160px;
+      background-color: #FFFFFF;
+      border: 0 none;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+      color: #333333;
+      outline: 0 none;
+      text-shadow: 0 1px 0 #FFFFFF;
+    }
+    .menu {
+      position: fixed;
+      z-index: 1;
+      width: 508px;
+      padding: 10px;
+      font-size: 14px;
+      color: #999;
+      background: #fff;
+    }
+    .menu input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin-left: 10px;
+      outline: none;
+      vertical-align: middle;
+    }
+    .menu input[type="checkbox"]:hover, .menu img:hover {
+      box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.5);
+    }
+    .menu input[type="checkbox"]:active, .menu img:active {
+      box-shadow: 0px 0px 25px -3px rgba(0,0,0,0.8);
+    }
+    .menu img {
+      width: 16px;
+      vertical-align: middle;
+      border-radius: 50%;
+    }
+    .menu label {
+      cursor: pointer;
+      user-select: none;
+    }
+    .action {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      right: 0;
+      padding: 10px;
+      line-height: 30px;
+      text-align: center;
+      font-size: 21px;
+      color: white;
+      transform: rotate(90deg);
+    }
+    .action:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    .action:active {
+      background: rgba(0,0,0,0.2);
+    }
+    #main {
+      position: relative;
+      width: 550px;
+      min-height: 50px;
+    }
+    #main > div {
+      position: relative;
+      height: 400px;
+      padding: 0 15px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    #listener td:nth-child(3) > div {
+      width: 375px;
+      max-height: 42px;
+      text-align: left;
+      word-break: break-all;
+      overflow-y: auto;
+    }
+    #listener .headers td:last-child {
+      text-align: center;
+    }
+    #listener .headers td:nth-child(2){
+      width: 300px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .hand {
+      margin-top: 41px;
+    }
+    .headers table {
+      width: 510px;
+      margin: 0 auto;
+    }
+    tr:not(:first-child):not(.header-box):hover {
+      cursor: pointer;
+      background-color: #FDF5E6;
+    }
+    .headers tr{
+      cursor: auto !important;
+    }
+    td{
+      padding: 5px;
+      text-align: center;
+      /*border: 1px dashed lightgray;*/
+    }
+    td:nth-child(2) > div {
+      width: 290px;
+      max-height: 42px;
+      text-align: left;
+      word-break: break-all;
+      overflow-y: auto;
+    }
+    #listener td:nth-child(2) > div {
+      width: 300px;
+    }
+    td:nth-child(2) > div > span, td:nth-child(3) > div > span {
+      color: red;
+    }
+    td div {
+      overflow-x: hidden;
+    }
+    #container .status {
+      background-color: #dff0d8;
+    }
+    #listener .status {
+      text-align: center;
+    }
+    .headers .delete-status {
+      color: red;
+    }
+    .headers .modify-status {
+      color: #ea932b;
+    }
+    #container tr:hover .status, #container .status:hover {
+      background-color: #d0e9c6;
+    }
+    .headers {
+      padding-bottom: 15px;
+      border: none;
+    }
+    .headers th {
+      height: 25px;
+    }
+    .headers td {
+      text-align: left;
+      color: #999999;
+      border: 2px dashed lightgray;
+      line-height: 16px;
+    }
+    .headers td:first-child {
+      width: 100px;
+      color: coral;
+    }
+    .headers td a {
+      position: absolute;
+      display: none;
+      width: 14px;
+      height: 14px;
+      top: 50%;
+      right: 12px;
+      margin: -7px 0 0 -2px;
+      text-align: center;
+      line-height: 14px;
+      cursor: pointer;
+      color: #666;
+      border-radius: 50%;
+      user-select: none;
+    }
+    #container .headers tr:hover a {
+      display: block;
+    }
+    #container .headers tr a:hover {
+      color: #fff;
+      background: #f35252;
+    }
+    #container .headers tr a:active {
+      background: #d60e0e;
+    }
+    .headers .edit-header {
+      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .headers .edit-model .edit-header {
+      padding-right: 4%;
+      color: initial;
+      outline: none;
+    }
+    .headers .add-model .edit-header {
+      padding-right: 22%;
+    }
+    .headers .add-model a {
+      width: 20%;
+      border-radius: 0;
+      cursor: inherit;
+    }
+    .add-model td:first-child > div {
+      max-height: 42px;
+      text-align: left;
+      word-break: break-all;
+      overflow-y: auto;
+      outline: none;
+      color: initial;
+    }
+    #container .headers .add-model a:hover, #container .headers .add-model a:active {
+      color: initial;
+      background: none;
+    }
+    .selected {
+      background-color: #FFE4C4 ;
+    }
+    .selected:hover {
+      background-color: #FFDEAD !important;
+    }
+    .selected ::-webkit-scrollbar-thumb {
+      background-color: #F4A460;
+    }
+    .selected:hover .status {
+      background-color: #39a511;
+    }
+    tr.selected .status {
+      background-color: #5bbf36;
+    }
+    .headers .edit-model .modified {
+      color: #f79208;
+    }
+    .edit-model {
+      position: relative;
+    }
+    .btn {
+      margin-left: 10px;
+    }
+    .add-btn {
+      float: right;
+      width: 16px;
+      line-height: 16px;
+      margin-right: 5px;
+      border-radius: 100%;
+      color: #666;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .add-btn:hover {
+      color: #fff;
+      background: #88C741;
+    }
+    .add-btn:active {
+      background: #70B522;
+    }
+    .add-model a{
+      float: right;
+      width: 20%;
+      height: 16px;
+    }
+    .ok {
+      color: #70B522;
+      cursor: pointer;
+    }
+    .cancel {
+      color: #867f82;
+      cursor: pointer;
+    }
+    .tips {
+      line-height: 400px;
+      color: #bbb;
+      text-align: center;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .toast {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -12px;
+      margin-left: -63px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      line-height: 12px;
+      text-align: center;
+      color: #FFFFFF;
+      background: rgba(112, 181, 34,.6);
+      transition: all 1s ease;
+      user-select: none;
+    }
+    .shadow {
+      position: absolute;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      left:0;
+      opacity: .2;
+    }
+    .nav-tabs {
+      margin: 10px 0;
+      padding: 0 10px;
+      border-bottom: 1px solid #ddd;
+      list-style: none;
+    }
+    .nav-tabs li {
+      float: left;
+      margin-bottom: -1px;
+    }
+    .nav-tabs a {
+      display: block;
+      margin-right: 2px;
+      padding: 8px;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid transparent;
+      cursor: pointer;
+      user-select: none;
+    }
+    .nav-tabs > li > a:hover {
+      border-color: #eeeeee #eeeeee #dddddd;
+    }
+    .nav-tabs > li > a:hover {
+      background-color: #eeeeee;
+    }
+    .nav-tabs > .active > a, .nav-tabs > .active > a:hover {
+      color: #555555;
+      cursor: default;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-bottom-color: transparent;
+    }
+    a {
+      color: #0088cc;
+      text-decoration: none;
+    }
+    body .active {
+      display: block !important;
+    }
+    .display-none {
+      display: none !important;
+    }
+    .error {
+      outline: 1px dashed red !important;
+    }
+    .listener-search, .listener, .tab-toggle .search, .tab-toggle .container{
+      display: none;
+    }
+    .tab-toggle .tab-listener, .tab-toggle .listener {
+      display: block
+    }
+    .tab-toggle .listener-search {
+      display: inline-block;
+    }
+  </style>
+  </head>
+  <body>
+    <header>
+      <span class="title">IHeader</span>
+      <input type="text" id="search" class="search display-none" placeholder="search">
+      <input type="text" id="listenerSearch" class="listener-search display-none" placeholder="search">
+      <a id="more" class="action">···</a>
+    </header>
+    <ul class="nav-tabs">
+      <li class="tab-current active">
+        <a data-href="container">Current Page</a>
+      </li>
+      <li class="tab-listener">
+        <a data-href="listener">All Listener</a>
+      </li>
+    </ul>
+    <div id="main">
+      <div id="container" class="container">
+        <div id="menu" class="menu display-none">
+          <img id="clear" src="./images/clear.png" alt="clear">
+          <input type="checkbox" id="preserve_log"> <label for="preserve_log">preserve log</label>
+        </div>
+      </div>
+      <div id="listener" class="listener"></div>
+    </div>
+    <div id="shadow" class="shadow"></div>
+  </body>
+  <script type="text/javascript" src="./js/waves.min.js?v=0.7.5"></script>
+  <script type="text/javascript" src="./js/index.js"></script>
+</html>

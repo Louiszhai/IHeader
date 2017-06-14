@@ -1,0 +1,15 @@
+{
+   "description": {
+      "message": "监听并修改页面的请求响应头。"
+   },
+   "iconHideTips": {
+      "message": "退出Header监听模式"
+   },
+   "iconTips": {
+      "message": "进入Header监听模式"
+   },
+   "optionsTitle": {
+    "description": "Title for the options page",
+    "message": "iHeader选项"
+  }
+}

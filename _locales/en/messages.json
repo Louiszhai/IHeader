@@ -1,0 +1,15 @@
+{
+   "description": {
+      "message": "Monitor and modify the request and response  header of the page."
+   },
+   "iconHideTips": {
+      "message": "Turn off the monitor mode of header"
+   },
+   "iconTips": {
+      "message": "Turn on the monitor mode of header"
+   },
+   "optionsTitle": {
+    "description": "Title for the options page",
+    "message": "iHeader settings"
+  }
+}
