@@ -449,8 +449,6 @@ function createView(document, bg, tabId, undefined){
   }
 
   function restoreListener(data, key, type){
-    //TODO 全部恢复有坑
-
     /* allListeners存在意味着不是测试数据 */
     if(allListeners){
       var url = data.url,

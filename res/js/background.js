@@ -304,7 +304,7 @@
     if(changeInfo.status === 'loading'){
       /* 每次刷新页面，icon都会回到初始状态并且不可点击，此处初始化PageView实例 或者 恢复icon之前的状态 */
       var pageView = PageViews(tabId).restore();
-      // TODO 重置messages的逻辑有bug，可能导致request的key丢失
+      // 刷新到监听器触发期间, 有可能部分请求已经发送了, 可能会误删一些请求信息, 故注释之
       // if(!pageView.isClearMessages){
       //   clearMessage(tabId);
       // }
@@ -497,7 +497,7 @@
         removeList.length && removeList.forEach(function(key){
           var index,
               hasItem = headers.some(function(header, i){
-                // TODO 不支持删除多个同名的header
+                // TODO 多个同名的response header, 每次删除的都是最后一个
                 if(header.name === key){
                   index = i;
                   return true;
