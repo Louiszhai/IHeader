@@ -8,11 +8,19 @@ Blog: http://louiszhai.github.io
 
 Github: http://github.com/Louiszhai/IHeader
 
-Chrome Webstore: https://chrome.google.com/webstore/detail/iheader/polajedphjkpjbfljoabmcejpcckeked?utm_source=chrome-ntp-icon
-
 This extension is mainly used for monitoring and the request and response header of pages, easily add or delete, modify the domain field.
 
 It can be used in the penetration test also.
+
+## Clone
+
+```
+git clone git@github.com:Louiszhai/IHeader.git
+```
+
+## Install
+
+Open [IHeader - Chrome Webstore](https://chrome.google.com/webstore/detail/iheader/polajedphjkpjbfljoabmcejpcckeked?utm_source=chrome-ntp-icon) to install it.
 
 ## Guide
 
