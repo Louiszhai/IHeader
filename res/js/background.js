@@ -539,6 +539,8 @@
         var value = obj[key];
         if(value === false){
           delete targetObj[key];
+        } else {
+          targetObj[key] = value;
         }
       }
     }
