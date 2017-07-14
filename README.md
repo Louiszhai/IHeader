@@ -1,3 +1,5 @@
+<a target="_blank" href="https://chrome.google.com/webstore/detail/iheader/polajedphjkpjbfljoabmcejpcckeked?utm_source=chrome-ntp-icon">![Try it](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
+
 # IHeader
 
 ![License MIT](https://img.shields.io/npm/l/express.svg)
