@@ -4,6 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="shortcut icon" type="image/x-icon" href="./images/lightning_green.png">
   <link rel="stylesheet" type="text/css" href="./css/waves.min.css?v=0.7.5">
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
   <title>IHeader</title>
   <style>
     ::-webkit-scrollbar {width:6px;height:10px;}
@@ -73,10 +74,9 @@
     .menu input[type="checkbox"]:active, .menu img:active {
       box-shadow: 0px 0px 25px -3px rgba(0,0,0,0.8);
     }
-    .menu img {
-      width: 16px;
-      vertical-align: middle;
-      border-radius: 50%;
+    .menu .clear {
+      margin-right: 5px;
+      opacity: 0.7;
     }
     .menu label {
       cursor: pointer;
@@ -212,11 +212,11 @@
       user-select: none;
     }
     #container .headers tr:hover a {
+      opacity: 0.7;
       display: block;
     }
     #container .headers tr a:hover {
-      color: #fff;
-      background: #f35252;
+      opacity: 1;
     }
     #container .headers tr a:active {
       background: #d60e0e;
@@ -277,21 +277,12 @@
     }
     .add-btn {
       float: right;
-      width: 16px;
-      line-height: 16px;
-      margin-right: 5px;
-      border-radius: 100%;
-      color: #666;
-      text-align: center;
       cursor: pointer;
       user-select: none;
+      opacity: 0.7;
     }
     .add-btn:hover {
-      color: #fff;
-      background: #88C741;
-    }
-    .add-btn:active {
-      background: #70B522;
+      opacity: 1;
     }
     .add-model a{
       float: right;
@@ -393,11 +384,21 @@
     .tab-toggle .listener-search {
       display: inline-block;
     }
+    .star {
+      opacity: 0.7;
+    }
+    .star:hover {
+      opacity: 1;
+    }
+    .star.checked {
+      background-position: -120px 0;
+    }
   </style>
   </head>
   <body>
     <header>
       <span class="title">IHeader</span>
+      <input type="button" class="icon-edit icon"/>
       <input type="text" id="search" class="search display-none" placeholder="search">
       <input type="text" id="listenerSearch" class="listener-search display-none" placeholder="search">
       <a id="more" class="action">···</a>
@@ -413,8 +414,8 @@
     <div id="main">
       <div id="container" class="container">
         <div id="menu" class="menu display-none">
-          <img id="clear" src="./images/clear.png" alt="clear">
-          <input type="checkbox" id="preserve_log"> <label for="preserve_log">preserve log</label>
+          <i id="clear" class="icon-ban-circle icon clear" title="clear"></i>
+          <input type="button" id="preserve_log" class="icon-star-empty icon star"/> <label for="preserve_log">preserve log</label>
         </div>
       </div>
       <div id="listener" class="listener"></div>

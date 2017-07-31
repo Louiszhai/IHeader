@@ -1,3 +1,4 @@
+/* checkbox */
 input[type="checkbox"] {
   width: 16px;
   height: 16px;
@@ -27,3 +28,48 @@ input[type="checkbox"]:active:not(:disabled) {
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.2), inset -1px -1px 0px rgba(255,255,255,0.6);
   border-color: rgba(0,0,0,0.5);
 }
+/* checkbox */
+
+/* icon */
+[class^="icon-"], [class*=" icon-"] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.icon {
+  background-image: url(../images/glyphicons-halflings.png);
+  vertical-align: middle;
+}
+.icon[disabled] {
+  opacity: 0.5;
+}
+.icon-ok {
+  background-position: -288px 0;
+}
+.icon-edit {
+  background-position: -96px -72px;
+}
+.icon-remove {
+  background-position: -312px 0;
+}
+.icon-plus {
+  background-position: -408px -96px;
+}
+.icon-ban-circle {
+  background-position: -216px -96px;
+}
+.icon-star {
+  background-position: -120px 0;
+}
+.icon-star-empty {
+  background-position: -144px 0;
+}
+input[type="button"].icon {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+/* icon */

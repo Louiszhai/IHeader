@@ -17,6 +17,7 @@ function createView(document, bg, tabId, undefined){
   var messages,
     allListeners,
     timer,
+    highlightTimer,
     main      = $('main'),
     container = $('container'),
     listenerContainer = $('listener'),
@@ -129,7 +130,7 @@ function createView(document, bg, tabId, undefined){
 
   var preserveLogStatus = bg && bg.getPreserveLog(tabId),
     logCheckbox = $('preserve_log');
-  preserveLogStatus && logCheckbox.setAttribute('checked', true);
+  preserveLogStatus && logCheckbox.addClass('checked');
   listenLog(logCheckbox);
   listenClear($('clear'));
   $('menu').removeClass('display-none');
@@ -194,7 +195,7 @@ function createView(document, bg, tabId, undefined){
         headerValue = createNode('div', td, item.value).addClass('edit-header');
 
       td.addClass('edit-model');
-      k === data.length - 1 && createNode('span', keyDiv, '+').addClass('add-btn').addEventListener('click', function(){
+      k === data.length - 1 && createNode('span', keyDiv).addClass('add-btn icon-plus icon').addEventListener('click', function(){
         addHeader(type, tr, saveBtn);
       });
       headerValue.setAttribute('contentEditable','');
@@ -204,7 +205,8 @@ function createView(document, bg, tabId, undefined){
 
       /* headerValue输入时，高亮当前区域、并切换按钮状态 */
       listenChange(type, headerValue, parent, saveBtn);
-      var removeBtn = createNode('a', td, 'x');
+      var removeBtn = createNode('a', td);
+      removeBtn.addClass('icon-remove icon');
       listenRemove(type, removeBtn, item.name, true, tr, saveBtn);
     }
   }
@@ -213,9 +215,8 @@ function createView(document, bg, tabId, undefined){
   function createSaveButton(parent, bgContext){
     var input = document.createElement('input');
     input.type = 'button';
-    input.value = '保存';
+    input.className = 'icon-ok icon btn';
     input.disabled = true;
-    input.className = 'btn';
     input.addEventListener('click', function(){
       if(bgContext){
         if(!isEmptyObject(changelist)){
@@ -254,11 +255,12 @@ function createView(document, bg, tabId, undefined){
         /* 错误提示 */
         showToast(main, 'header名称不能为空!');
         function flash(){
+          highlightTimer && window.clearTimeout(highlightTimer);
           headerName.toggleClass('error');
           if(headerName.innerText){
             headerName.removeClass('error');
           }else{
-            setTimeout(flash, 500);
+            highlightTimer = setTimeout(flash, 500);
           }
         }
         flash();
@@ -374,7 +376,7 @@ function createView(document, bg, tabId, undefined){
       var td = createNode('td', tr);
       var input = document.createElement('input');
       input.type = 'button';
-      input.value = '恢复全部';
+      input.className = 'icon-remove icon';
       input.addEventListener('click', function(e){
         restoreListener.call(this, item);
         e.stopPropagation();
@@ -386,23 +388,18 @@ function createView(document, bg, tabId, undefined){
 
       /* add click event for tr */
       listenClick(tr, headerData, function(parent, data){
-        var tr = createNode('tr', parent),
-          head = {
-            request: true,
-            response: true
-          };
-        createNode('th', tr, 'Key');
-        createNode('th', tr, 'Value');
-        createNode('th', tr, 'Type');
-        createNode('th', tr, 'Action');
+        var head = {
+          request: 'Request Headers',
+          response: 'Response Headers'
+        };
 
         /* 创建tr点击后展开的header列表 */
         data.headers.forEach(function(item){
           /* 创建请求和响应头标示 */
-          if(head[item.type]){
-            head[item.type] = false;
+          var headerText;
+          if(headerText = head[item.type]){
             var tHead = createNode('tr', parent),
-              th = createNode('th', tHead, item.type);
+              th = createNode('th', tHead, headerText);
             th.setAttribute('colspan', '4');
           }
 
@@ -428,7 +425,7 @@ function createView(document, bg, tabId, undefined){
           var td    = createNode('td', currentTR),
             input = document.createElement('input');
           input.type = 'button';
-          input.value = '恢复';
+          input.className = 'icon-remove icon';
           input.addEventListener('click', function(){
             /* remove current row */
             var headers = data.headers;
@@ -592,7 +589,8 @@ function createView(document, bg, tabId, undefined){
   /* 监听preserve log checkbox */
   function listenLog(element){
     element.addEventListener('click', function(){
-      bg && bg.setPreserveLog(tabId, this.checked);
+      this.toggleClass('checked');
+      bg && bg.setPreserveLog(tabId, this.hasClass('checked'));
     });
   }
 
