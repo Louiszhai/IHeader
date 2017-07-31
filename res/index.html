@@ -53,7 +53,8 @@
     .menu {
       position: fixed;
       z-index: 1;
-      width: 508px;
+      box-sizing: border-box;
+      width: 100%;
       padding: 10px;
       font-size: 14px;
       color: #999;
@@ -101,13 +102,12 @@
     }
     #main {
       position: relative;
-      width: 550px;
+      width: 600px;
       min-height: 50px;
     }
     #main > div {
       position: relative;
       height: 400px;
-      padding: 0 15px;
       overflow-x: hidden;
       overflow-y: auto;
     }
@@ -129,10 +129,11 @@
       border-collapse: collapse;
     }
     .hand {
-      margin-top: 41px;
+      margin: 41px 5px 0 5px;
+      width: 590px;
     }
     .headers table {
-      width: 510px;
+      width: 570px;
       margin: 0 auto;
     }
     tr:not(:first-child):not(.header-box):hover {
@@ -148,8 +149,8 @@
       /*border: 1px dashed lightgray;*/
     }
     td:nth-child(2) > div {
-      width: 290px;
-      max-height: 42px;
+      /*width: 290px;*/
+      max-height: 45px;
       text-align: left;
       word-break: break-all;
       overflow-y: auto;
