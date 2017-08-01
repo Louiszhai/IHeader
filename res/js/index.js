@@ -325,6 +325,7 @@ function createView(document, bg, tabId, undefined){
           onBeforeSendHeaders: 'request',
           onHeadersReceived: 'response'
         };
+
       if(listener && (currentChangelist = listener.changelist)){
         var urls = Object.keys(currentChangelist);
         urls.forEach(function (url) {
@@ -334,14 +335,21 @@ function createView(document, bg, tabId, undefined){
           item = item || {
               url: url,
               tabId: pageListener.tabId,
-              headers: []
+              headers: [],
+              changelistArray: [],
             };
 
           keys.forEach(function (key) {
-            var array = [key, urlObject[key]];
-            array.type = types[name];
-            item.headers.push(array);
+            var header = {
+              key: key,
+              type: types[name],
+              source: urlObject,
+              value: urlObject[key]
+            };
+            item.headers.push(header);
           });
+
+          item.changelistArray.push(currentChangelist);
 
           headerData[url] = item;
         });
@@ -371,12 +379,37 @@ function createView(document, bg, tabId, undefined){
       createNode('td', tr, ++sort);
       createNode('td', tr, item.tabId);
       var div = createNode('div', createNode('td', tr), url);
+      /* url 可编辑 */
+      div.style.outline = 'none';
+      div.setAttribute('contentEditable','');
+      div.setAttribute('spellcheck', false);
+      div.defaultValue = url;
+      div.addEventListener('input', throttle(function(){
+        var changelistArray = item.changelistArray,
+            value = this.innerText,
+            defaultValue = this.defaultValue,
+            isRepeat = changelistArray.filter(function(v){
+              return v[value];
+            }).length;
+
+        if(isRepeat){
+          showToast(main, '拦截的url不能重复设置');
+          this.innerText = defaultValue;
+        }else{
+          changelistArray.forEach(function(v){
+            v[value] = v[defaultValue];
+            delete v[defaultValue];
+          });
+          this.defaultValue = value;
+        }
+      }, 200));
+
       listenerLinks.push(url.toLowerCase());
       listenerLinkDOMs.push({parent: tr, child: div, url: url});
       var td = createNode('td', tr);
       var input = document.createElement('input');
       input.type = 'button';
-      input.className = 'icon-remove icon';
+      input.className = 'icon-remove icon revert';
       input.addEventListener('click', function(e){
         restoreListener.call(this, item);
         e.stopPropagation();
@@ -405,38 +438,47 @@ function createView(document, bg, tabId, undefined){
 
           /* 生成headers map列表 */
           var currentTR = createNode('tr', parent);
-          createNode('div', createNode('td', currentTR), item[0]);
+          createNode('div', createNode('td', currentTR), item.key);
           var div = createNode('div', createNode('td', currentTR)).addClass('edit-header'),
             keyValue, type, title;
-          if(item[1] === true){
+          if(item.value === true){
             keyValue = '-';
             type = 'D';
-            title = '表示' + item[0] + '已被删除';
+            title = '表示' + item.key + '已被删除';
           }else{
-            keyValue = item[1];
+            keyValue = item.value;
             type = 'A/M';
-            title = '表示' + item[0] + '是新增字段或被修改过';
+            title = '表示' + item.key + '是新增字段或被修改过';
           }
           div = createNode('div', div, keyValue);
-          keyValue === '-' && (div.style.textAlign = 'center');
+          if(type === 'D'){
+            div.style.textAlign = 'center';
+          }else{
+            div.style.outline = 'none';
+            div.setAttribute('contentEditable','');
+            div.setAttribute('spellcheck', false);
+            div.addEventListener('input', throttle(function(){
+              item.source[item.key] = this.innerText;
+            }, 200));
+          }
           createNode('td', currentTR, type).addClass('status').addClass(type === 'D' ? 'delete-status' : 'modify-status').setAttribute('title', title);
 
           /* 创建恢复按钮 */
           var td    = createNode('td', currentTR),
             input = document.createElement('input');
           input.type = 'button';
-          input.className = 'icon-remove icon';
+          input.className = 'icon-remove icon revert';
           input.addEventListener('click', function(){
             /* remove current row */
             var headers = data.headers;
             for(var i = 0; i< headers.length; i++){
-              if(headers[i][0] === item[0]){
+              if(headers[i][0] === item.key){
                 headers.splice(i, 1);
                 break;
               }
             }
             parent.removeChild(currentTR);
-            restoreListener.call(this, data, item[0], item.type);
+            restoreListener.call(this, data, item.key, item.type);
           });
           td.appendChild(input);
         });

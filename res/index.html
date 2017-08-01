@@ -111,18 +111,24 @@
       overflow-x: hidden;
       overflow-y: auto;
     }
-    #listener td:nth-child(3) > div {
+    .listener td:nth-child(3) > div {
       width: 375px;
       max-height: 42px;
       text-align: left;
       word-break: break-all;
       overflow-y: auto;
     }
-    #listener .headers td:last-child {
+    .listener .headers td:last-child {
       text-align: center;
     }
-    #listener .headers td:nth-child(2){
+    .listener .headers td:nth-child(2){
       width: 300px;
+    }
+    .listener .revert {
+      visibility: hidden;
+    }
+    .listener tr:hover .revert {
+      visibility: visible;
     }
     table {
       width: 100%;
