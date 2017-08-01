@@ -124,7 +124,7 @@ function createView(document, bg, tabId, undefined){
       addWaveEffect(tr, shadow);
     }
   }
-  container.appendChild(table);
+  container.querySelector('.table-box').appendChild(table);
   /* 初始化 */
   listenSearch($('search').removeClass('display-none'));
 
@@ -181,7 +181,7 @@ function createView(document, bg, tabId, undefined){
     }) && (data.sorted = true);
 
     var types = {request: 'Request Headers', response: 'Response Headers'},
-      tr = createNode('tr', parent),
+      tr = createNode('tr', parent).addClass('title'),
       th = createNode('th', tr, types[type]);
 
     th.setAttribute('colspan', 2);
@@ -233,6 +233,7 @@ function createView(document, bg, tabId, undefined){
         }
       }else{
         console.warn('预览模式下无法修改header...');
+        showToast(main, '预览模式下无法修改header...');
       }
     });
     parent.appendChild(input);
@@ -270,7 +271,8 @@ function createView(document, bg, tabId, undefined){
         addChangeItem(type, url, headerName.innerText, div.innerText);
         newTR.removeClass('add-model');
         headerName.removeAttribute('contentEditable');
-        a.innerText = 'x';
+        a.innerText = '';
+        a.addClass('icon-remove icon');
         input.disabled = false;
         listenChange(type, div, newTR.parentNode, input);
         setTimeout(function(){
@@ -360,7 +362,7 @@ function createView(document, bg, tabId, undefined){
   /* 创建 table */
   function createListenerTable(headerData){
     listenerContainer.innerHTML = '';
-    var table = createNode('table', listenerContainer),
+    var table = createNode('table', createNode('div', listenerContainer).addClass('table-box')).addClass('hand'),
       tr    = createNode('tr', table),
       sort  = 0;
 
@@ -369,7 +371,6 @@ function createView(document, bg, tabId, undefined){
     createNode('th', tr, 'Num');
     createNode('th', tr, 'TabId');
     createNode('th', tr, 'Request URL');
-    createNode('th', tr, 'Action');
 
     Object.keys(headerData).forEach(function(url){
       var item = headerData[url];
@@ -378,7 +379,8 @@ function createView(document, bg, tabId, undefined){
       tr.setAttribute('data-i', url);
       createNode('td', tr, ++sort);
       createNode('td', tr, item.tabId);
-      var div = createNode('div', createNode('td', tr), url);
+      var td = createNode('td', tr).addClass('edit-model'),
+        div = createNode('div', td, url);
       /* url 可编辑 */
       div.style.outline = 'none';
       div.setAttribute('contentEditable','');
@@ -406,15 +408,12 @@ function createView(document, bg, tabId, undefined){
 
       listenerLinks.push(url.toLowerCase());
       listenerLinkDOMs.push({parent: tr, child: div, url: url});
-      var td = createNode('td', tr);
-      var input = document.createElement('input');
-      input.type = 'button';
-      input.className = 'icon-remove icon revert';
-      input.addEventListener('click', function(e){
+
+      var a = createNode('a', td).addClass('icon-remove icon revert');
+      a.addEventListener('click', function(e){
         restoreListener.call(this, item);
         e.stopPropagation();
       });
-      td.appendChild(input);
 
       var trNext = createNode('tr', table).addClass('header-box').addClass('display-none');
       createNode('td', trNext).addClass('headers').setAttribute('colspan', '4');
@@ -431,7 +430,8 @@ function createView(document, bg, tabId, undefined){
           /* 创建请求和响应头标示 */
           var headerText;
           if(headerText = head[item.type]){
-            var tHead = createNode('tr', parent),
+            head[item.type] = false;
+            var tHead = createNode('tr', parent).addClass('title'),
               th = createNode('th', tHead, headerText);
             th.setAttribute('colspan', '4');
           }
@@ -461,26 +461,32 @@ function createView(document, bg, tabId, undefined){
               item.source[item.key] = this.innerText;
             }, 200));
           }
-          createNode('td', currentTR, type).addClass('status').addClass(type === 'D' ? 'delete-status' : 'modify-status').setAttribute('title', title);
+          var td = createNode('td', currentTR, type).addClass('status' + type === 'D' ? 'delete-status' : 'modify-status');
+          td.setAttribute('title', title);
 
           /* 创建恢复按钮 */
-          var td    = createNode('td', currentTR),
-            input = document.createElement('input');
-          input.type = 'button';
-          input.className = 'icon-remove icon revert';
-          input.addEventListener('click', function(){
+          var a = createNode('a', td).addClass('icon-remove icon revert');
+          a.addEventListener('click', function(){
             /* remove current row */
             var headers = data.headers;
-            for(var i = 0; i< headers.length; i++){
-              if(headers[i][0] === item.key){
+            for(var i = headers.length - 1; i >= 0; i--){
+              if(headers[i].key === item.key && headers[i].type === item.type){
                 headers.splice(i, 1);
                 break;
               }
             }
+            /* 移除 request/response headers 标题 */
+            var prev = currentTR.prev(),
+              next = currentTR.next();
+            /* 前面节点是header标题, 且后面节点没有或也是header标题 */
+            if((!next || next.hasClass('title')) && prev && prev.hasClass('title')){
+              parent.removeChild(prev);
+            }
+            /* 移除当前行 */
             parent.removeChild(currentTR);
+            /* 移除拦截规则 或 移除监听器 */
             restoreListener.call(this, data, item.key, item.type);
           });
-          td.appendChild(input);
         });
       });
       addWaveEffect(tr, shadow);
@@ -747,7 +753,6 @@ function createView(document, bg, tabId, undefined){
         var regExp = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
         return regExp.test(this.className);
       }
-      return this;
     };
     /* 切换class */
     HTMLElement.prototype.toggleClass = function(className) {

@@ -70,6 +70,17 @@ window.headerData = {
   "http://snow.pajk-ent.com/megatron/pajk/application/selectByName": {
     url: "http://snow.pajk-ent.com/megatron/pajk/application/selectByName",
     "tabId": 33,
-    "headers": [["User-Agent", "123"]]
+    "headers": [{
+      "key": "User-Agent",
+      "type": "request",
+      "source": {},
+      "value": "123"
+    },
+    {
+      "key": "Origin",
+      "type": "response",
+      "source": {},
+      "value": "https://www.baidu.com"
+    }]
   }
 };

@@ -52,14 +52,10 @@
       text-shadow: 0 1px 0 #FFFFFF;
     }
     .menu {
-      position: fixed;
-      z-index: 1;
       box-sizing: border-box;
-      width: 100%;
       padding: 10px;
       font-size: 14px;
       color: #999;
-      background: #fff;
     }
     .menu input[type="checkbox"] {
       width: 14px;
@@ -105,15 +101,19 @@
       width: 600px;
       min-height: 50px;
     }
-    #main > div {
+    #main > div, #listener .table-box {
       position: relative;
       height: 400px;
+    }
+    #main .table-box {
+      position: relative;
+      height: 360px;
       overflow-x: hidden;
       overflow-y: auto;
     }
     .listener td:nth-child(3) > div {
-      width: 375px;
-      max-height: 42px;
+      padding-right: 4%;
+      max-height: 45px;
       text-align: left;
       word-break: break-all;
       overflow-y: auto;
@@ -127,7 +127,7 @@
     .listener .revert {
       visibility: hidden;
     }
-    .listener tr:hover .revert {
+    .listener tr:not(.header-box):hover .revert {
       visibility: visible;
     }
     table {
@@ -135,14 +135,14 @@
       border-collapse: collapse;
     }
     .hand {
-      margin: 41px 5px 0 5px;
+      margin: 0 5px;
       width: 590px;
     }
     .headers table {
       width: 570px;
       margin: 0 auto;
     }
-    tr:not(:first-child):not(.header-box):hover {
+    tr:not(.title):not(.header-box):hover {
       cursor: pointer;
       background-color: #FDF5E6;
     }
@@ -161,9 +161,9 @@
       word-break: break-all;
       overflow-y: auto;
     }
-    #listener td:nth-child(2) > div {
-      width: 300px;
-    }
+    /*#listener td:nth-child(2) > div {*/
+      /*width: 300px;*/
+    /*}*/
     td:nth-child(2) > div > span, td:nth-child(3) > div > span {
       color: red;
     }
@@ -181,6 +181,7 @@
     }
     .headers .modify-status {
       color: #ea932b;
+      position: relative;
     }
     #container tr:hover .status, #container .status:hover {
       background-color: #d0e9c6;
@@ -202,7 +203,7 @@
       width: 100px;
       color: coral;
     }
-    .headers td a {
+    .headers td a, #allListener > tr > td > a {
       position: absolute;
       display: none;
       width: 14px;
@@ -217,15 +218,12 @@
       border-radius: 50%;
       user-select: none;
     }
-    #container .headers tr:hover a {
+    .headers tr:hover a, #allListener > tr:hover a {
       opacity: 0.7;
-      display: block;
+      display: inline-block;
     }
-    #container .headers tr a:hover {
+    .headers tr a:hover, #allListener > tr a:hover {
       opacity: 1;
-    }
-    #container .headers tr a:active {
-      background: #d60e0e;
     }
     .headers .edit-header {
       position: relative;
@@ -404,7 +402,6 @@
   <body>
     <header>
       <span class="title">IHeader</span>
-      <input type="button" class="icon-edit icon"/>
       <input type="text" id="search" class="search display-none" placeholder="search">
       <input type="text" id="listenerSearch" class="listener-search display-none" placeholder="search">
       <a id="more" class="action">···</a>
@@ -423,8 +420,11 @@
           <i id="clear" class="icon-ban-circle icon clear" title="clear"></i>
           <input type="button" id="preserve_log" class="icon-star-empty icon star"/> <label for="preserve_log">preserve log</label>
         </div>
+        <div class="table-box"></div>
       </div>
-      <div id="listener" class="listener"></div>
+      <div id="listener" class="listener">
+        <div class="table-box"></div>
+      </div>
     </div>
     <div id="shadow" class="shadow"></div>
   </body>
