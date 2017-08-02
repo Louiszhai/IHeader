@@ -467,22 +467,30 @@
       }
     }else{
       var l = setHeadersListener(eventType, type, tabId);
-      /* 初始化modifyHeaders */
+      /* init modifyHeaders */
       l[mapName] = headerMap;
-      /* 加入listeners列表 */
+      /* add it to listeners list */
       listeners[eventType] = l;
     }
   };
 
-  /* 设置 Headers listener */
+  /* set Headers listener */
   function setHeadersListener(eventType, type, tabId){
     var l = new Listener(eventType, getFilter(tabId), ['blocking', type], function(details){
       var changelist = l.changelist,
           headers    = details[type],
-          obj        = {};
+          url        = details.url,
+          obj        = {},
+          hasRule    = changelist && (url in changelist || Object.keys(changelist).some(
+                         function(v) {
+                           if (~url.indexOf(v)) {
+                             url = v;
+                             return true;
+                           }
+                       }));
 
-      if(changelist && details.url in changelist){ // 后续加入正则匹配
-        var headerMap    = changelist[details.url],
+      if(hasRule){
+        var headerMap    = changelist[url],
             keys       = Object.keys(headerMap),
             addHeaders = [],
             removeList = keys.filter(function(key){
@@ -509,7 +517,7 @@
             /* 清除无效的修改规则 */
             delete headerMap[key];
             if(isEmptyObject(headerMap)){
-              delete changelist[details.url];
+              delete changelist[url];
             }
           }
         });
@@ -521,7 +529,7 @@
     return l;
   }
 
-  /* 是否空对象 */
+  /* is empty object */
   function isEmptyObject(obj){
     var key;
     for(key in obj){
