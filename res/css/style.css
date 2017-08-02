@@ -67,6 +67,9 @@ input[type="checkbox"]:active:not(:disabled) {
 .icon-star-empty {
   background-position: -144px 0;
 }
+.icon-refresh {
+  background-position: -240px -24px;
+}
 input[type="button"].icon {
   border: none;
   outline: none;
