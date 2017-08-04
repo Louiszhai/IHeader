@@ -124,7 +124,7 @@ function createView(document, bg, tabId, undefined){
       addWaveEffect(tr, shadow);
     }
   }
-  container.querySelector('.table-box').appendChild(table);
+  createNode('div', container).addClass('table-box').appendChild(table);
   /* 初始化 */
   listenSearch($('search').removeClass('display-none'));
 
