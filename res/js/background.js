@@ -1,7 +1,7 @@
 (function() {
-  var UNINIT = 0, // 页面不支持缓存
-      INITED = 1, // 页面支持缓存，但缓存未打开
-      ACTIVE = 2, // 页面缓存已激活
+  var UNINIT = 0, // 扩展未初始化
+      INITED = 1, // 扩展已初始化，但未激活
+      ACTIVE = 2, // 扩展已激活
       types = JSON.parse(localStorage.getItem('types')) || [ 'main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'object', 'xmlhttprequest', 'other']; // 请求类型
   
   /* 获取filter */
@@ -13,7 +13,7 @@
     };
   }
 
-  /* 处理插件图标状态 */
+  /* 处理扩展图标状态 */
   var PageActionIcon = (function(){
     var pageAction = chrome.pageAction,
         icons = {},
@@ -137,17 +137,19 @@
     };
     return PageViews;
   })();
-  
-  /* 处理Tab页监听器 */
+
+  /* 处理标签页监听器 */
   var PageListeners = (function(){
+    /* 所有的页面控制器列表 */
     var allListeners = {};
 
     function PageListeners(tabId){
+      /* 如有就返回已有的实例 */
       if(allListeners[tabId]){
         return allListeners[tabId];
       }
 
-      /* 返回合适的实例 */
+      /* 强制以构造器方式调用 */
       if(!(this instanceof PageListeners)){
         return new PageListeners(tabId);
       }
@@ -156,51 +158,29 @@
       var _this = this;
       var filter = getFilter(tabId);
 
-      /* 捕获responseHeaders */
-      //var l0 = new Listener('onHeadersReceived', filter, ['blocking', 'responseHeaders'], function(details){
-      //  console.log('onHeadersReceived:', details);
-      //  var responseHeaders = details.responseHeaders;
-      //  for(var i = 0; i< responseHeaders.length; i++){
-      //    //if(responseHeaders[i].name === 'x-frame-options'){
-      //    //  responseHeaders.splice(i, 1);
-      //    //}
-      //    if(responseHeaders[i].name === 'Cache-Control'){
-      //      responseHeaders[i].value = 'max-age=315360000';
-      //    }
-      //  }
-      //  responseHeaders.push({name: 'author', value: 'louis'});
-      //  //responseHeaders.push({name: 'Access-Control-Allow-Origin', value: '*'});
-      //  return {responseHeaders: responseHeaders};
-      //});
-
       /* 捕获requestHeaders */
       var l1 = new Listener('onSendHeaders', filter, ['requestHeaders'], function(details){
-        // console.log('onSendHeaders:', details);
         _this.saveMesage('request', details);
       });
 
       /* 捕获responseHeaders */
       var l2 = new Listener('onResponseStarted', filter, ['responseHeaders'], function(details){
-        // console.log('onResponseStarted:', details);
         _this.saveMesage('response', details);
       });
 
-      /* 捕获 Completed responseHeaders */
+      /* 捕获 Completed Details */
       var l3 = new Listener('onCompleted', filter, ['responseHeaders'], function(details){
-        // console.log('onCompleted:', details);
         _this.saveMesage('complete', details);
       });
 
       allListeners[tabId] = this;
       this.tabId = tabId;
       this.listeners = {
-        //'onHeadersReceived': l0,
         'onSendHeaders': l1,
         'onResponseStarted': l2,
         'onCompleted': l3
       };
       this.messages = {};
-      
       console.log('tabId=' + tabId + ' listener on');
     }
     PageListeners.has = function(tabId){
