@@ -2,8 +2,9 @@
   var UNINIT = 0, // 扩展未初始化
       INITED = 1, // 扩展已初始化，但未激活
       ACTIVE = 2, // 扩展已激活
-      types = JSON.parse(localStorage.getItem('types')) || [ 'main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'object', 'xmlhttprequest', 'other']; // 请求类型
-  
+      types = JSON.parse(localStorage.getItem('types')); // 请求类型
+  !types && (types = ['main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'object', 'xmlhttprequest', 'other']) && localStorage.setItem('types', JSON.stringify(types));
+
   /* 获取filter */
   function getFilter(tabId){
     return {
@@ -112,12 +113,12 @@
         switch(status){
           case ACTIVE:
             icon.init();
-            PageListeners.remove(tabId);
+            ListenerControler.remove(tabId);
             Message.send(tabId, 'cacheListeningCancel');
             break;
           default:
             icon.active();
-            PageListeners(tabId);
+            ListenerControler(tabId);
             Message.send(tabId, 'cacheListening');
         }
       }
@@ -139,19 +140,19 @@
   })();
 
   /* 处理标签页监听器 */
-  var PageListeners = (function(){
+  var ListenerControler = (function(){
     /* 所有的页面控制器列表 */
     var allListeners = {};
 
-    function PageListeners(tabId){
+    function ListenerControler(tabId){
       /* 如有就返回已有的实例 */
       if(allListeners[tabId]){
         return allListeners[tabId];
       }
 
       /* 强制以构造器方式调用 */
-      if(!(this instanceof PageListeners)){
-        return new PageListeners(tabId);
+      if(!(this instanceof ListenerControler)){
+        return new ListenerControler(tabId);
       }
       
       /* 初始化变量 */
@@ -183,16 +184,16 @@
       this.messages = {};
       console.log('tabId=' + tabId + ' listener on');
     }
-    PageListeners.has = function(tabId){
+    ListenerControler.has = function(tabId){
       return !!allListeners.hasOwnProperty(tabId);
     };
-    PageListeners.get = function(tabId){
+    ListenerControler.get = function(tabId){
       return allListeners[tabId];
     };
-    PageListeners.getAll = function(){
+    ListenerControler.getAll = function(){
       return allListeners;
     };
-    PageListeners.remove = function(tabId){
+    ListenerControler.remove = function(tabId){
       var pageListeners = allListeners[tabId];
       if(pageListeners){
         var listeners = pageListeners.listeners,
@@ -206,11 +207,11 @@
         console.log('tabId=' + tabId + ' listener off');
       }
     };
-    PageListeners.prototype.remove = function(){
-      PageListener.remove(this.tabId);
+    ListenerControler.prototype.remove = function(){
+      ListenerControler.remove(this.tabId);
       return this;
     };
-    PageListeners.prototype.saveMesage = function(type, message){
+    ListenerControler.prototype.saveMesage = function(type, message){
       var requestId = message.requestId;
       if(this.messages[requestId] instanceof Object){
         this.messages[requestId][type] = message;
@@ -221,7 +222,7 @@
       }
       return this;
     };
-    return PageListeners;
+    return ListenerControler;
   })();
 
   /* 独立的监听器 */
@@ -317,7 +318,7 @@
   /* 回收Tab */
   var clearTab = function(tabId){
     PageViews.remove(tabId);
-    PageListeners.remove(tabId);
+    ListenerControler.remove(tabId);
   };
 
   /* 更新右键菜单 */
@@ -343,7 +344,7 @@
   window.clearMessages = function(tabId, isForce){
     var pageView = PageViews.get(tabId);
     if(pageView){
-      (pageView.preserveLog && !isForce) || PageListeners.has(tabId) && (PageListeners(tabId).messages = {});
+      (pageView.preserveLog && !isForce) || ListenerControler.has(tabId) && (ListenerControler(tabId).messages = {});
     }
   };
 
@@ -380,21 +381,21 @@
 
   /* 获取该Tab页的所有请求消息 */
   window.getMessages = function(tabId){
-    return PageListeners.has(tabId) ? PageListeners(tabId).messages : null;
+    return ListenerControler.has(tabId) ? ListenerControler(tabId).messages : null;
   };
 
   /* 获取监听的状态 */
   window.getPageListenerStatus = function(tabId){
-    return PageListeners.has(tabId);
+    return ListenerControler.has(tabId);
   };
 
   /* 获取所有的页面监听器 */
   window.getAllPageListeners = function(){
-    return PageListeners.getAll();
+    return ListenerControler.getAll();
   };
 
   window.reloadAllListeners = function(){
-    var allListeners = PageListeners.getAll(),
+    var allListeners = ListenerControler.getAll(),
         i,
         j,
         pageListeners;
@@ -420,7 +421,7 @@
 
   /* set modify header */
   window.setModifyHeadersListener = function(type, tabId, headerMap){
-    var listeners = PageListeners(tabId).listeners,
+    var listeners = ListenerControler(tabId).listeners,
         eventType = webRequestEvent[type],
         listener = listeners[eventType],
         mapName = 'changelist';
