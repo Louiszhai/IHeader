@@ -70,18 +70,18 @@
     return PageActionIcon;
   })();
 
-  /* 处理Tab页信息 */
-  var PageViews = (function(){
+  /* 处理标签页状态 */
+  var TabControler = (function(){
     var tabs = {};
     
-    function PageViews(tabId, url){
+    function TabControler(tabId, url){
       var instance = tabs[tabId];
       if(instance){
         return instance;
       }
       
-      if(!(this instanceof PageViews)){
-        return new PageViews(tabId);
+      if(!(this instanceof TabControler)){
+        return new TabControler(tabId);
       }
       
       tabs[tabId] = this;
@@ -89,15 +89,15 @@
       this.url    = url;
       this.init();
     }
-    PageViews.get = function(tabId){
+    TabControler.get = function(tabId){
       return tabs[tabId];
     };
-    PageViews.remove = function(tabId){
+    TabControler.remove = function(tabId){
       if(tabs[tabId]){
         delete tabs[tabId];
       }
     };
-    PageViews.prototype.init = function(){
+    TabControler.prototype.init = function(){
       if(!this.icon){
         this.icon = new PageActionIcon(this.tabId).init();
         /* 初次init不需要恢复icon */
@@ -105,7 +105,7 @@
       }
       return this;
     };
-    PageViews.prototype.switchActive = function(){
+    TabControler.prototype.switchActive = function(){
       var icon = this.icon;
       if(icon){
         var status = icon.status;
@@ -124,7 +124,7 @@
       }
       return this;
     };
-    PageViews.prototype.restore = function(){
+    TabControler.prototype.restore = function(){
       if(this.needNextRestore){
         this.icon && this.icon.restore();
       }else{
@@ -132,16 +132,16 @@
       }
       return this;
     };
-    PageViews.prototype.remove = function(){
-      PageViews.remove(this.tabId);
+    TabControler.prototype.remove = function(){
+      TabControler.remove(this.tabId);
       return this;
     };
-    return PageViews;
+    return TabControler;
   })();
 
-  /* 处理标签页监听器 */
+  /* 监听器控制器 */
   var ListenerControler = (function(){
-    /* 所有的页面控制器列表 */
+    /* 所有的监听器控制器列表 */
     var allListeners = {};
 
     function ListenerControler(tabId){
@@ -257,23 +257,23 @@
   
   /* 监听pageAction的点击事件--设置default_popup后失效 */
   // chrome.pageAction.onClicked.addListener(function(tab) {
-  //   PageViews(tab.id, tab.url).switchActive();
+  //   TabControler(tab.id, tab.url).switchActive();
   // });
   
   /* 监听content script发送的消息 */
   // Message.on('cacheInit', function(data, sender, cb){
-  //   PageViews(sender.tab.id, sender.url);
+  //   TabControler(sender.tab.id, sender.url);
   //   console.log('cacheInit');
   // });
   // Message.on('cacheUnInit', function(data, sender, cb){
-  //   PageViews(sender.tab.id, sender.url).icon.hide();
+  //   TabControler(sender.tab.id, sender.url).icon.hide();
   // });
   /* 页面卸载前处理 */
   Message.on('beforeunload', function(data, sender, cb){
     var tabId = sender.tab.id;
     clearMessages(tabId);
-    //PageViews(tabId).restore().isClearMessages = true;
-    PageViews(tabId).isClearMessages = true;
+    //TabControler(tabId).restore().isClearMessages = true;
+    TabControler(tabId).isClearMessages = true;
   });
 
   /* 监听tab关闭的事件，移除关闭页面实例 */
@@ -284,12 +284,12 @@
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
     if(changeInfo.status === 'loading'){
       /* 每次刷新页面，icon都会回到初始状态并且不可点击，此处初始化PageView实例 或者 恢复icon之前的状态 */
-      var pageView = PageViews(tabId).restore();
+      var currentTab = TabControler(tabId).restore();
       // 刷新到监听器触发期间, 有可能部分请求已经发送了, 可能会误删一些请求信息, 故注释之
-      // if(!pageView.isClearMessages){
+      // if(!currentTab.isClearMessages){
       //   clearMessage(tabId);
       // }
-      // pageView.isClearMessages = false;
+      // currentTab.isClearMessages = false;
     }
   });
   
@@ -298,7 +298,7 @@
     if (command == "toggle_status") {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var tab = tabs[0];
-        tab && PageViews(tab.id, tab.url).switchActive();
+        tab && TabControler(tab.id, tab.url).switchActive();
       });
     }
   });
@@ -308,7 +308,7 @@
     if(data.reason == 'install' || data.reason == 'update'){
       chrome.tabs.query({}, function(tabs){
         tabs.forEach(function(tab){
-          PageViews(tab.id).restore();
+          TabControler(tab.id).restore();
         });
       });
       console.log('[扩展]:', data.reason);
@@ -317,7 +317,7 @@
 
   /* 回收Tab */
   var clearTab = function(tabId){
-    PageViews.remove(tabId);
+    TabControler.remove(tabId);
     ListenerControler.remove(tabId);
   };
 
@@ -332,7 +332,7 @@
     });
     
     chrome.contextMenus.onClicked.addListener(function (menu, tab){
-      PageViews(tab.id, tab.url).switchActive();
+      TabControler(tab.id, tab.url).switchActive();
     });
   }
 
@@ -342,24 +342,24 @@
 
   /* 清除该Tab的所有历史消息 */
   window.clearMessages = function(tabId, isForce){
-    var pageView = PageViews.get(tabId);
-    if(pageView){
-      (pageView.preserveLog && !isForce) || ListenerControler.has(tabId) && (ListenerControler(tabId).messages = {});
+    var currentTab = TabControler.get(tabId);
+    if(currentTab){
+      (currentTab.preserveLog && !isForce) || ListenerControler.has(tabId) && (ListenerControler(tabId).messages = {});
     }
   };
 
   /* 获取是否保存之前的log */
   window.getPreserveLog = function(tabId){
-    var pageView = PageViews.get(tabId);
-    if(pageView){
-      return pageView.preserveLog;
+    var currentTab = TabControler.get(tabId);
+    if(currentTab){
+      return currentTab.preserveLog;
     }
   };
 
   /* 设置是否保存之前的log */
   window.setPreserveLog = function(tabId, bool){
-    var pageView = PageViews.get(tabId);
-    pageView && (pageView.preserveLog = bool);
+    var currentTab = TabControler.get(tabId);
+    currentTab && (currentTab.preserveLog = bool);
   };
 
   
@@ -471,7 +471,7 @@
                        }));
 
       if(hasRule){
-        var headerMap    = changelist[url],
+        var headerMap  = changelist[url],
             keys       = Object.keys(headerMap),
             addHeaders = [],
             removeList = keys.filter(function(key){
