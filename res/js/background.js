@@ -95,6 +95,7 @@
     TabControler.remove = function(tabId){
       if(tabs[tabId]){
         delete tabs[tabId];
+        ListenerControler.remove(tabId);
       }
     };
     TabControler.prototype.init = function(){
@@ -114,12 +115,12 @@
           case ACTIVE:
             icon.init();
             ListenerControler.remove(tabId);
-            Message.send(tabId, 'cacheListeningCancel');
+            Message.send(tabId, 'ListeningCancel');
             break;
           default:
             icon.active();
             ListenerControler(tabId);
-            Message.send(tabId, 'cacheListening');
+            Message.send(tabId, 'Listening');
         }
       }
       return this;
@@ -278,7 +279,7 @@
 
   /* 监听tab关闭的事件，移除关闭页面实例 */
   chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
-    clearTab(tabId);
+    TabControler.remove(tabId);
   });
   /* 监听tab刷新的事件 */
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
@@ -314,12 +315,6 @@
       console.log('[扩展]:', data.reason);
     }
   });
-
-  /* 回收Tab */
-  var clearTab = function(tabId){
-    TabControler.remove(tabId);
-    ListenerControler.remove(tabId);
-  };
 
   /* 更新右键菜单 */
   function updateContextMenus(){
