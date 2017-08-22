@@ -284,7 +284,7 @@
   /* 监听tab刷新的事件 */
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
     if(changeInfo.status === 'loading'){
-      /* 每次刷新页面，icon都会回到初始状态并且不可点击，此处初始化PageView实例 或者 恢复icon之前的状态 */
+      /* 每次刷新页面，icon都会回到初始状态并且不可点击，此处初始化TabControler实例 或者 恢复icon之前的状态 */
       var currentTab = TabControler(tabId).restore();
       // 刷新到监听器触发期间, 有可能部分请求已经发送了, 可能会误删一些请求信息, 故注释之
       // if(!currentTab.isClearMessages){
@@ -312,6 +312,22 @@
           TabControler(tab.id).restore();
         });
       });
+      // 动态载入Notification js文件
+      setTimeout(function(){
+        var partMessage = data.reason == 'install' ? '安装成功' : '更新成功';
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          var tab = tabs[0];
+          if (!/chrome:\/\//.test(tab.url)){
+            chrome.tabs.executeScript(tab.id, {file: 'res/js/notification.js'}, function(){
+              chrome.tabs.executeScript(tab.id, {code: 'notification("IHeader扩展程序'+ partMessage +'")'}, function(log){
+                log[0] && console.log('[Notification]: 成功弹出通知');
+              });
+            });
+          } else {
+            console.log('[Notification]: Cannot access a chrome:// URL');
+          }
+        });
+      },1000);
       console.log('[扩展]:', data.reason);
     }
   });

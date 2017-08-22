@@ -32,5 +32,5 @@
   "description": "__MSG_description__",
   "manifest_version": 2,
   "options_page": "res/options.html",
-  "permissions": [ "tabs" , "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "contextMenus"]
+  "permissions": [ "tabs" , "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "contextMenus", "notifications"]
 }
