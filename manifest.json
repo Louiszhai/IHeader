@@ -17,8 +17,14 @@
   },
   "commands": {
     "toggle_status": {
-      "suggested_key": { "default": "Alt+H" },
-      "description": "Toggle cache"
+      "suggested_key": {
+        "default": "Alt+H",
+        "windows": "Alt+H",
+        "mac": "Alt+H",
+        "chromeos": "Alt+H",
+        "linux": "Alt+H"
+      },
+      "description": "Toggle IHeader"
     }
   },
   "content_scripts": [
