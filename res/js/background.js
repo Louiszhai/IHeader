@@ -7,11 +7,12 @@
 
   /* 获取filter */
   function getFilter(tabId){
-    return {
+    var filter = {
       urls: ['<all_urls>'],
-      tabId: tabId,
       types: types
     };
+    tabId !== 'all' && (filter.tabId = tabId);
+    return filter;
   }
 
   /* 处理扩展图标状态 */
@@ -160,30 +161,36 @@
       var _this = this;
       var filter = getFilter(tabId);
 
-      /* 捕获requestHeaders */
-      var l1 = new Listener('onSendHeaders', filter, ['requestHeaders'], function(details){
-        _this.saveMesage('request', details);
-      });
-
-      /* 捕获responseHeaders */
-      var l2 = new Listener('onResponseStarted', filter, ['responseHeaders'], function(details){
-        _this.saveMesage('response', details);
-      });
-
-      /* 捕获 Completed Details */
-      var l3 = new Listener('onCompleted', filter, ['responseHeaders'], function(details){
-        _this.saveMesage('complete', details);
-      });
-
       allListeners[tabId] = this;
       this.tabId = tabId;
-      this.listeners = {
-        'onSendHeaders': l1,
-        'onResponseStarted': l2,
-        'onCompleted': l3
-      };
       this.messages = {};
-      console.log('tabId=' + tabId + ' listener on');
+
+      if(tabId !== 'all'){
+        /* 捕获requestHeaders */
+        var l1 = new Listener('onSendHeaders', filter, ['requestHeaders'], function(details){
+          _this.saveMesage('request', details);
+        });
+
+        /* 捕获responseHeaders */
+        var l2 = new Listener('onResponseStarted', filter, ['responseHeaders'], function(details){
+          _this.saveMesage('response', details);
+        });
+
+        /* 捕获 Completed Details */
+        var l3 = new Listener('onCompleted', filter, ['responseHeaders'], function(details){
+          _this.saveMesage('complete', details);
+        });
+
+        this.listeners = {
+          'onSendHeaders': l1,
+          'onResponseStarted': l2,
+          'onCompleted': l3
+        };
+        console.log('tabId=' + tabId + ' listener on');
+      }else{
+        this.listeners = {};
+        console.log('Global listener on');
+      }
     }
     ListenerControler.has = function(tabId){
       return !!allListeners.hasOwnProperty(tabId);
@@ -475,10 +482,7 @@
           obj        = {},
           hasRule    = changelist && (url in changelist || Object.keys(changelist).some(
                          function(v) {
-                           if (~url.indexOf(v)) {
-                             url = v;
-                             return true;
-                           }
+                           return ~url.indexOf(v) && (url = v);
                        }));
 
       if(hasRule){
@@ -486,32 +490,15 @@
             keys       = Object.keys(headerMap),
             addHeaders = [],
             removeList = keys.filter(function(key){
-              var keyValue = headerMap[key];
-              if(keyValue === true) {
-                return true;
-              }else {
-                addHeaders.push({name: key, value: keyValue});
-              }
-            });
+                           var keyValue = headerMap[key];
+                           return keyValue === true || (addHeaders.push({name: key, value: keyValue}), false);
+                         });
 
         removeList.length && removeList.forEach(function(key){
-          var index,
-              hasItem = headers.some(function(header, i){
-                // TODO 多个同名的response header, 每次删除的都是最后一个
-                if(header.name === key){
-                  index = i;
-                  return true;
-                }
-              });
-          if(hasItem){
-            headers.splice(index, 1);
-          }else{
-            /* 清除无效的修改规则 */
-            delete headerMap[key];
-            if(isEmptyObject(headerMap)){
-              delete changelist[url];
-            }
-          }
+          headers.some(function(header, i){
+            // TODO 多个同名的response header, 每次删除的都是最后一个
+            return header.name === key && headers.splice(i, 1);
+          });
         });
         [].push.apply(headers, addHeaders);
       }

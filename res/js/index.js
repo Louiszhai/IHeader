@@ -129,9 +129,11 @@ function createView(document, bg, tabId, undefined){
   listenSearch($('search').removeClass('display-none'));
 
   var preserveLogStatus = bg && bg.getPreserveLog(tabId),
-    logCheckbox = $('preserve_log');
+    logCheckbox = $('preserve_log'),
+    globalSwitch = $('globalSwitch');
   preserveLogStatus && logCheckbox.addClass('checked');
   listenLog(logCheckbox);
+  listenGlobalSwitch(globalSwitch);
   listenClear($('clear'));
   $('menu').removeClass('display-none');
 
@@ -220,8 +222,9 @@ function createView(document, bg, tabId, undefined){
     input.addEventListener('click', function(){
       if(bgContext){
         if(!isEmptyObject(changelist)){
-          changelist.request && bgContext.setModifyHeadersListener('requestHeaders', tabId, changelist.request);
-          changelist.response && bgContext.setModifyHeadersListener('responseHeaders', tabId, changelist.response);
+          var _tabId = globalSwitch.hasClass('checked') ? 'all' : tabId;
+          changelist.request && bgContext.setModifyHeadersListener('requestHeaders', _tabId, changelist.request);
+          changelist.response && bgContext.setModifyHeadersListener('responseHeaders', _tabId, changelist.response);
           changelist = {};
           /* 保存后清除输入框的状态 */
           [].forEach.call(container.querySelectorAll('.modified'), function(item){
@@ -639,6 +642,13 @@ function createView(document, bg, tabId, undefined){
     element.addEventListener('click', function(){
       this.toggleClass('checked');
       bg && bg.setPreserveLog(tabId, this.hasClass('checked'));
+    });
+  }
+
+  /* 监听global switch checkbox */
+  function listenGlobalSwitch(element){
+    element.addEventListener('click', function(){
+      this.toggleClass('checked');
     });
   }
 
