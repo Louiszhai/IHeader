@@ -63,15 +63,14 @@ function createView(document, bg, tabId, undefined){
   }
 
   /* 声明变量 */
-  var i             = 0,
-    links         = [],
-    linkDOMs      = [],
-    changelist    = {},
-    headers       = $('headers'),
-    globalSwitch  = $('globalSwitch'),
-    saveBtn       = createSaveButton($('menu'), bg),
-    table         = createNode('table'),
-    tr            = createNode('tr', table);
+  var links         = [],
+      linkDOMs      = [],
+      changelist    = {},
+      headers       = $('headers'),
+      globalSwitch  = $('globalSwitch'),
+      saveBtn       = createSaveButton($('menu'), bg),
+      table         = createNode('table'),
+      tr            = createNode('tr', table);
 
   /* 创建表头 */
   table.className = 'hand';
@@ -94,13 +93,12 @@ function createView(document, bg, tabId, undefined){
         continue;
       }
 
-      i++;
       tr = createNode('tr', table);
       links.push(request.url.toLowerCase());
 
       /* 展示请求信息 */
       tr.setAttribute('data-i', request.requestId);
-      createNode('td', tr, i);
+      createNode('td', tr).addClass('counter');
       var div = createNode('div', createNode('td', tr), request.url);
       div.setAttribute('title', request.url);
       linkDOMs.push({parent: tr, child: div, url: request.url});
@@ -367,8 +365,7 @@ function createView(document, bg, tabId, undefined){
   function createListenerTable(headerData){
     listenerContainer.innerHTML = '';
     var table = createNode('table', createNode('div', listenerContainer).addClass('table-box')).addClass('hand'),
-      tr    = createNode('tr', table),
-      sort  = 0;
+        tr    = createNode('tr', table);
 
     table.id = 'allListener';
     /* 创建表头 */
@@ -381,7 +378,7 @@ function createView(document, bg, tabId, undefined){
       /* 创建 row */
       var tr = createNode('tr', table);
       tr.setAttribute('data-i', url);
-      createNode('td', tr, ++sort);
+      createNode('td', tr).addClass('counter');
       createNode('td', tr, item.tabId);
       var td = createNode('td', tr).addClass('edit-model'),
         div = createNode('div', td, url);

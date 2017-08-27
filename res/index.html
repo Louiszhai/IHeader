@@ -101,6 +101,15 @@
       width: 600px;
       min-height: 50px;
     }
+    #main > div {
+      counter-reset: section;
+    }
+    .counter {
+      counter-increment: section;
+    }
+    .counter::before {
+      content: counter(section);
+    }
     #main > div, #listener .table-box {
       position: relative;
       height: 400px;
