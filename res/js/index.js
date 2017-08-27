@@ -68,6 +68,7 @@ function createView(document, bg, tabId, undefined){
     linkDOMs      = [],
     changelist    = {},
     headers       = $('headers'),
+    globalSwitch  = $('globalSwitch'),
     saveBtn       = createSaveButton($('menu'), bg),
     table         = createNode('table'),
     tr            = createNode('tr', table);
@@ -129,8 +130,7 @@ function createView(document, bg, tabId, undefined){
   listenSearch($('search').removeClass('display-none'));
 
   var preserveLogStatus = bg && bg.getPreserveLog(tabId),
-    logCheckbox = $('preserve_log'),
-    globalSwitch = $('globalSwitch');
+    logCheckbox = $('preserve_log');
   preserveLogStatus && logCheckbox.addClass('checked');
   listenLog(logCheckbox);
   listenGlobalSwitch(globalSwitch);
@@ -239,7 +239,8 @@ function createView(document, bg, tabId, undefined){
         showToast(main, '预览模式下无法修改header...');
       }
     });
-    parent.appendChild(input);
+    //parent.appendChild(input);
+    parent.insertBefore(input, globalSwitch);
     return input;
   }
 
