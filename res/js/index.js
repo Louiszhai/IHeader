@@ -403,6 +403,7 @@ function createView(document, bg, tabId, undefined){
             v[value] = v[defaultValue];
             delete v[defaultValue];
           });
+          item.tabId === 'all' && bg.syncStore4Listener(allListeners.all.listeners);
           this.defaultValue = value;
         }
       }, 200));
@@ -522,6 +523,7 @@ function createView(document, bg, tabId, undefined){
         emptyChangelist(listeners, 'onBeforeSendHeaders', url);
         emptyChangelist(listeners, 'onHeadersReceived', url);
       }
+      data.tabId === 'all' && bg.syncStore4Listener(listeners);
     }
 
     if(!key || data.headers.length === 0){

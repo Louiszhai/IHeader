@@ -319,6 +319,11 @@
           TabControler(tab.id).restore();
         });
       });
+      // 重启全局监听器
+      var globalListeners = JSON.parse(localStorage.getItem('globalListener') || '[]');
+      globalListeners.forEach(function(listener){
+        window.setModifyHeadersListener(listener.type, 'all', listener.changelist, true);
+      });
       // 动态载入Notification js文件
       setTimeout(function(){
         var partMessage = data.reason == 'install' ? '安装成功' : '更新成功';
@@ -429,6 +434,18 @@
     }
   };
 
+  window.syncStore4Listener = function(listeners){
+    var list = [];
+    Object.keys(listeners).forEach(function(key){
+      var o = {},
+          listener = listeners[key];
+      o.changelist = listener.changelist;
+      o.type = listener.extraInfoSpec[1];
+      list.push(o);
+    });
+    localStorage.setItem('globalListener', JSON.stringify(list));
+  };
+
   /* 修改请求头 */
   /* remove headerMap === { url: {key: false } */
   /* modify headerMap === { url: {key: value } */
@@ -438,7 +455,7 @@
   };
 
   /* set modify header */
-  window.setModifyHeadersListener = function(type, tabId, headerMap){
+  window.setModifyHeadersListener = function(type, tabId, headerMap, ignoreStore){
     var listeners = ListenerControler(tabId).listeners,
         eventType = webRequestEvent[type],
         listener = listeners[eventType],
@@ -471,6 +488,9 @@
       /* add it to listeners list */
       listeners[eventType] = l;
     }
+
+    /* 存储全局监听器的内容 */
+    !ignoreStore && tabId === 'all' && window.syncStore4Listener(listeners);
   };
 
   /* set Headers listener */
