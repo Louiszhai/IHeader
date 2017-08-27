@@ -1,9 +1,24 @@
 (function() {
-  var UNINIT = 0, // 扩展未初始化
-      INITED = 1, // 扩展已初始化，但未激活
-      ACTIVE = 2, // 扩展已激活
-      types = JSON.parse(localStorage.getItem('types')); // 请求类型
-  !types && (types = ['main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'object', 'xmlhttprequest', 'other']) && localStorage.setItem('types', JSON.stringify(types));
+  var UNINIT   = 0, // 扩展未初始化
+      INITED   = 1, // 扩展已初始化，但未激活
+      ACTIVE   = 2, // 扩展已激活
+      types    = JSON.parse(localStorage.getItem('types')), // 请求类型
+      allTypes = [
+        'main_frame',
+        'sub_frame',
+        'stylesheet',
+        'script',
+        'image',
+        'font',
+        'object',
+        'xmlhttprequest',
+        'ping',
+        'csp_report',
+        'media',
+        'websocket',
+        'other'
+      ];
+  !types && (types = allTypes) && localStorage.setItem('types', JSON.stringify(types));
 
   /* 获取filter */
   function getFilter(tabId){
@@ -385,7 +400,11 @@
     currentTab && (currentTab.preserveLog = bool);
   };
 
-  
+  /* 获取所有支持的请求类型 */
+  window.getAllTypes = function(){
+    return allTypes;
+  };
+
   /* 获取当前监听的请求类型 */
   window.getTypes = function(){
     return types;

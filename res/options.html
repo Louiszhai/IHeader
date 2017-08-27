@@ -46,7 +46,7 @@
     }
     .container {
       box-sizing: border-box;
-      padding: 90px 0 30px;
+      padding: 90px 0 60px;
     }
     .title {
       font-size: 18px;
@@ -103,40 +103,7 @@
       <div class="title">
         请选择需要监听的请求类型
       </div>
-      <div class="settings">
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_main_frame">
-          <label for="listen_main_frame">main_frame</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_sub_frame">
-          <label for="listen_sub_frame">sub_frame</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_stylesheet">
-          <label for="listen_stylesheet">stylesheet</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_script">
-          <label for="listen_script">script</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_image">
-          <label for="listen_image">image</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_object">
-          <label for="listen_object">object</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_xmlhttprequest">
-          <label for="listen_xmlhttprequest">xmlhttprequest</label>
-        </p>
-        <p class="check">
-          <input type="checkbox" class="listen" id="listen_other">
-          <label for="listen_other">other</label>
-        </p>
-      </div>
+      <div id="settings" class="settings"></div>
       <div class="describe">
         新开的监听会在修改后立即生效，已经开启的监听是否需要立即
         <input type="button" id="reload" class="btn icon-refresh icon" disabled />
