@@ -1,6 +1,6 @@
 {
   "name": "IHeader",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "icons": {
       "128": "res/images/lightning_green128.png",
       "32": "res/images/lightning_green.png",
@@ -37,6 +37,7 @@
   "default_locale": "en",
   "description": "__MSG_description__",
   "manifest_version": 2,
+  "minimum_chrome_version": "26.0",
   "options_page": "res/options.html",
   "permissions": [ "tabs" , "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "contextMenus", "notifications"]
 }
