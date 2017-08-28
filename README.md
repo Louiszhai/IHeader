@@ -2,6 +2,8 @@
 
 # IHeader
 
+switch to [README_zh_CN.md](https://github.com/Louiszhai/IHeader/blob/master/README_zh_CN.md)
+
 ![License MIT](https://img.shields.io/npm/l/express.svg)
 
 Author: louis
