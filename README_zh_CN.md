@@ -68,6 +68,8 @@ type值为"D"的意味着删除的字段。
 
 使用过程中如有任何疑问，欢迎随时给我提issue。
 
+IHeader的开发思路和源码解析请戳[Chrome扩展开发—HTTP请求响应头域修改](http://louiszhai.github.io/2017/08/28/iheader/)。
+
 ## License
 
 Released under [MIT](http://rem.mit-license.org/)  LICENSE.
