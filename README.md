@@ -4,6 +4,8 @@
 
 ![License MIT](https://img.shields.io/npm/l/express.svg)
 
+switch to [README-中文.md](https://github.com/Louiszhai/IHeader/blob/master/README_zh_CN.md)
+
 Author: louis
 
 Blog: http://louiszhai.github.io
