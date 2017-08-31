@@ -20,6 +20,18 @@ Authorization、Proxy-Connection和Transfer-Encoding）不会出现在请求信�
 
 对于响应头而言，只能修改或删除非缓存相关字段或添加字段，由于响应头允许多个同名字段同时存在，因此无法覆盖修改缓存相关的字段。
 
+## Feature
+
+现在，IHeader支持以下功能：
+
+1. 支持request headers的增删改查。
+2. 支持Tab内request列表、已定制规则列表的搜索过滤。
+3. 支持一键清除Tab内的所有request记录。
+4. 支持新增或删除全局规则。
+5. 支持修改已定制规则的URL。
+6. 自动补全支持CORS的响应头（开发中...）。
+7. 支持域名代理-Proxy（开发中…）。
+
 ## Clone
 
 ```
@@ -68,7 +80,7 @@ type值为"D"的意味着删除的字段。
 
 使用过程中如有任何疑问，欢迎随时给我提issue。
 
-IHeader的开发思路和源码解析请戳[Chrome扩展开发—HTTP请求响应头域修改](http://louiszhai.github.io/2017/08/28/iheader/)。
+IHeader的开发思路和源码解析请戳[Chrome扩展开发—HTTP请求响应头域修改](http://louiszhai.github.io/2017/08/28/iheader/)（该文章已被《程序员》杂志收录，尚未公开）。
 
 ## License
 
