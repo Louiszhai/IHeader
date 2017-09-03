@@ -2,6 +2,7 @@
   var UNINIT   = 0, // 扩展未初始化
       INITED   = 1, // 扩展已初始化，但未激活
       ACTIVE   = 2, // 扩展已激活
+      autoCORS = true,
       types    = JSON.parse(localStorage.getItem('types')), // 请求类型
       allTypes = [
         'main_frame',
@@ -131,11 +132,13 @@
           case ACTIVE:
             icon.init();
             ListenerControler.remove(tabId);
+            TabControler(tabId).autoCORS = false;
             Message.send(tabId, 'ListeningCancel');
             break;
           default:
             icon.active();
             ListenerControler(tabId);
+            autoCORS && setCORSHeaders(tabId);
             Message.send(tabId, 'Listening');
         }
       }
@@ -284,13 +287,13 @@
   // });
   
   /* 监听content script发送的消息 */
-  // Message.on('cacheInit', function(data, sender, cb){
-  //   TabControler(sender.tab.id, sender.url);
-  //   console.log('cacheInit');
-  // });
-  // Message.on('cacheUnInit', function(data, sender, cb){
-  //   TabControler(sender.tab.id, sender.url).icon.hide();
-  // });
+   Message.on('pageInit', function(data, sender, cb){
+     var currentTab = TabControler(sender.tab.id);
+     currentTab.url = sender.url;
+     autoCORS && currentTab.autoCORS && setCORSHeaders(sender.tab.id);
+     //TODO 切换CORS开关时，需要释放已添加的CORS规则
+     //TODO response headers 对同个字段设置多个规则, 容易出现字段不合理的情况
+   });
   /* 页面卸载前处理 */
   Message.on('beforeunload', function(data, sender, cb){
     var tabId = sender.tab.id;
@@ -421,6 +424,11 @@
     localStorage.setItem('types', JSON.stringify(types));
   };
 
+  /*  */
+  window.setAutoCORS = function(bool){
+    autoCORS = bool;
+  };
+
   /* 获取该Tab页的所有请求消息 */
   window.getMessages = function(tabId){
     return ListenerControler.has(tabId) ? ListenerControler(tabId).messages : null;
@@ -521,7 +529,7 @@
           obj        = {},
           hasRule    = changelist && (url in changelist || Object.keys(changelist).some(
                          function(v) {
-                           return ~url.indexOf(v) && (url = v);
+                           return ~url.indexOf(v) && (url = v, true);
                        }));
 
       if(hasRule){
@@ -545,6 +553,25 @@
       return obj;
     });
     return l;
+  }
+
+  /* set CORS headers */
+  function setCORSHeaders(tabId){
+    var type = 'responseHeaders';
+    var currentTab = TabControler(tabId);
+    var origin = (currentTab.url || '*').replace(/([^/]*\/\/[^/]+).*/,'$1');
+    var headerMap = {
+      '': {
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Headers': 'x-requested-with,Content-Type,Connection',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+        'Allow': 'GET,POST',
+        'Access-Control-Max-Age': '3600'
+      }
+    };
+    setModifyHeadersListener(type, tabId, headerMap);
+    currentTab.autoCORS = true;
   }
 
   /* is empty object */

@@ -13,4 +13,5 @@
   window.addEventListener('beforeunload',function(){
     Message.send('beforeunload');
   });
+  Message.send('pageInit');
 })();
