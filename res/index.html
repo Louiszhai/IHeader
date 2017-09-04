@@ -23,6 +23,7 @@
       background-color: #88C741;
       box-shadow: 0px 1px 8px #abd27f;
       font-size: 18px;
+      font-weight: 500;
       line-height: 50px;
     }
     .search, .listener-search {
@@ -228,11 +229,7 @@
       user-select: none;
     }
     .headers tr:hover a, #allListener > tr:hover a {
-      opacity: 0.7;
       display: inline-block;
-    }
-    .headers tr a:hover, #allListener > tr a:hover {
-      opacity: 1;
     }
     .headers .edit-header {
       position: relative;
@@ -292,10 +289,6 @@
       float: right;
       cursor: pointer;
       user-select: none;
-      opacity: 0.7;
-    }
-    .add-btn:hover {
-      opacity: 1;
     }
     .add-model a{
       float: right;
@@ -397,21 +390,95 @@
     .tab-toggle .listener-search {
       display: inline-block;
     }
-    .star {
-      opacity: 0.7;
-    }
-    .star:hover {
-      opacity: 1;
-    }
-    .star.checked {
-      background-position: -120px 0;
-    }
     .global-switch {
       margin-left: 10px;
       font-size: 10px;
     }
     .icon-ok[disabled] + .global-switch, .icon-ok[disabled] ~ label {
       display: none;
+    }
+    .dialog .box{
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      left: 50%;
+      top: 50%;
+      width: 400px;
+      height: 300px;
+      box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);
+      background: #fff;
+      border-radius: 3px;
+      transform: translate(-50%, -40%);
+    }
+    .box header {
+      position: relative;
+      height: 40px;
+      line-height: 40px;
+      background: #ccc;
+      box-shadow: 0px 1px 8px #ccc;
+      font-size: 15px;
+      user-select: none;
+    }
+    .box header .icon {
+      margin-left: 10px;
+    }
+    .box header .icon-remove {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+    .box .content {
+      flex: 1;
+      margin: 10px 0;
+      overflow-y: auto;
+      counter-reset: section;
+    }
+    .content .proxy-item {
+      position: relative;
+      padding: 6px 0 6px 20px;
+      user-select: none;
+      counter-increment: section;
+    }
+    .content .proxy-item:hover {
+      background: #F1F1F1;
+    }
+    .proxy-item::before {
+      content: counter(section);
+      position: absolute;
+      margin-left: -10px;
+      line-height: 20px;
+      color: #808080;
+    }
+    .proxy-item .arrow-right:hover {
+      opacity: 0.7;
+      cursor: default;
+    }
+    .proxy-item .text {
+      width: 39%;
+      height: 16px;
+      margin: 0 3px;
+      padding: 0 1%;
+      font-size: 12px;
+      border: none;
+      outline: none;
+    }
+    .proxy-item .icon-remove {
+      display: none;
+    }
+    .proxy-item:hover .icon-remove {
+      display: inline-block;
+    }
+    .bg-shadow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.1);
+    }
+    .align-right {
+      text-align: right;
     }
   </style>
   </head>
@@ -442,6 +509,24 @@
       </div>
     </div>
     <div id="shadow" class="shadow"></div>
+    <div id="settingDialog" class="dialog display-none">
+      <div id="bg-shadow" class="bg-shadow"></div>
+      <div class="box">
+        <header>
+          Host Proxy Settings
+          <a id="addProxyBtn" class="icon-plus icon" title="Add proxy rule"></a>
+          <a id="settingsCloseBtn" class="icon-remove icon" title="close dialog"></a>
+        </header>
+        <div id="settingsContent" class="content">
+          <div class="proxy-item display-none">
+            <input type="text" class="text align-right" placeholder="www.test.com"/>
+            <a class="icon-arrow-right icon arrow-right"></a>
+            <input type="text" class="text" placeholder="127.0.0.1"/>
+            <a class="icon-remove icon"></a>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
   <script type="text/javascript" src="./js/waves.min.js?v=0.7.5"></script>
   <script type="text/javascript" src="./js/index.js"></script>

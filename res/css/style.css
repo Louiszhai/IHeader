@@ -42,6 +42,11 @@ input[type="checkbox"]:active:not(:disabled) {
 .icon {
   background-image: url(../images/glyphicons-halflings.png);
   vertical-align: middle;
+  opacity: 0.7;
+  transition: all .2s;
+}
+.icon:hover {
+  opacity: 1;
 }
 .icon[disabled] {
   opacity: 0.3;
@@ -61,7 +66,7 @@ input[type="checkbox"]:active:not(:disabled) {
 .icon-ban-circle {
   background-position: -216px -96px;
 }
-.icon-star {
+.icon-star, .icon-star-empty.checked {
   background-position: -120px 0;
 }
 .icon-star-empty {
@@ -69,6 +74,9 @@ input[type="checkbox"]:active:not(:disabled) {
 }
 .icon-refresh {
   background-position: -240px -24px;
+}
+.icon-arrow-right {
+  background-position: -264px -96px;
 }
 input[type="button"].icon {
   border: none;

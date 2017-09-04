@@ -30,7 +30,27 @@ function createView(document, bg, tabId, undefined){
 
   /* 绑定more按钮点击事件 */
   $('more').addEventListener('click', function(){
-    showToast(main, '更多功能，敬请期待');
+    toggleSettingDialog();
+  });
+
+  /* Settings dialog */
+  /* 关闭设置对话框 */
+  $('settingsCloseBtn').addEventListener('click', function(){
+    toggleSettingDialog();
+  });
+  /* 点击清除shadow background */
+  $('bg-shadow').addEventListener('click', function(){
+    toggleSettingDialog();
+  });
+  /* 新增代理规则 */
+  $('addProxyBtn').addEventListener('click', function(){
+    var item = document.querySelector('.proxy-item').cloneNode(true);
+    $('settingsContent').appendChild(item.removeClass('display-none'));
+  });
+  /* 移除代理规则 */
+  $('settingsContent').on('.icon-remove', function(){
+    var item = this.parentNode;
+    item.parentNode.removeChild(item);
   });
 
   /* 绑定tab栏点击事件 */
@@ -665,6 +685,11 @@ function createView(document, bg, tabId, undefined){
     addWaveEffect(element, shadow);
   }
 
+  /* 设置弹框 */
+  function toggleSettingDialog(){
+    document.getElementById('settingDialog').toggleClass('display-none');
+  }
+
   /* 设置提示 */
   function setTips(tip, target){
     var div = createNode('div', target, tip);
@@ -768,6 +793,21 @@ function createView(document, bg, tabId, undefined){
     HTMLElement.prototype.toggleClass = function(className) {
       if (this._type != 'null_obj') {
         this.hasClass(className) ? this.removeClass(className) : this.addClass(className);
+      }
+      return this;
+    };
+
+    /* 事件委托 */
+    HTMLElement.prototype.on = function(type, fn) {
+      if (this._type != 'null_obj' && typeof type === 'string' && typeof fn === 'function') {
+        var isClass = type.indexOf('.') === 0;
+        isClass && (type = type.substring(1));
+        this.addEventListener('click', function(e){
+          var item = e.target;
+          if(item && (isClass ? item.hasClass(type) : item.nodeName === type)){
+            fn.call(item, e);
+          }
+        });
       }
       return this;
     };
