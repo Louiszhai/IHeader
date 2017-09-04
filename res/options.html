@@ -14,7 +14,6 @@
       font-family: Helvetica,arial,sans-serif;
       font-weight: 200;
       line-height: 1;
-      color: #4d4e53;
     }
     header {
       background: #F1F1F1;
@@ -50,20 +49,25 @@
     }
     .title {
       font-size: 18px;
+      font-weight: 400;
       line-height: 2;
     }
+    .margin-top20 {
+      margin-top: 20px;
+    }
     .settings {
-      padding-left: 5px;
+      padding-left: 10px;
     }
     .check {
       user-select: none;
     }
     p label {
       font-size: 14px;
-      color: #333;
+      color: #666;
       cursor: pointer;
     }
     .describe {
+      padding-left: 10px;
       font-size: 14px;
     }
     .btn {
@@ -105,8 +109,17 @@
       </div>
       <div id="settings" class="settings"></div>
       <div class="describe">
-        新开的监听会在修改后立即生效，已经开启的监听是否需要立即
+        新开的监听会在修改后立即生效，已经开启的监听是否需要立即刷新
         <input type="button" id="reload" class="btn icon-refresh icon" disabled />
+      </div>
+      <div class="title margin-top20">
+        请设置默认的CORS规则
+      </div>
+      <div class="settings">
+        <p>
+          <input type="checkbox" id="cors">
+          <label for="cors">Tab开启监听时, 默认为其所有请求添加CORS响应头</label>
+        </p>
       </div>
     </div>
     <footer>

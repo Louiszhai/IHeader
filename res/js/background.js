@@ -2,7 +2,7 @@
   var UNINIT   = 0, // 扩展未初始化
       INITED   = 1, // 扩展已初始化，但未激活
       ACTIVE   = 2, // 扩展已激活
-      autoCORS = true,
+      autoCORS = localStorage.getItem('defaultCORS') || true,
       types    = JSON.parse(localStorage.getItem('types')), // 请求类型
       allTypes = [
         'main_frame',
@@ -291,8 +291,7 @@
      var currentTab = TabControler(sender.tab.id);
      currentTab.url = sender.url;
      autoCORS && currentTab.autoCORS && setCORSHeaders(sender.tab.id);
-     //TODO 切换CORS开关时，需要释放已添加的CORS规则
-     //TODO response headers 对同个字段设置多个规则, 容易出现字段不合理的情况
+
    });
   /* 页面卸载前处理 */
   Message.on('beforeunload', function(data, sender, cb){
@@ -424,9 +423,15 @@
     localStorage.setItem('types', JSON.stringify(types));
   };
 
-  /*  */
-  window.setAutoCORS = function(bool){
+  /* set default CORS rules */
+  window.setDefaultCORS = function(bool){
     autoCORS = bool;
+    localStorage.setItem('defaultCORS', bool);
+  };
+
+  /* get default CORS rules */
+  window.getDefaultCORS = function(){
+    return autoCORS;
   };
 
   /* 获取该Tab页的所有请求消息 */
@@ -520,7 +525,9 @@
     !ignoreStore && tabId === 'all' && window.syncStore4Listener(listeners);
   };
 
-  /* set Headers listener */
+  /* set Headers listener
+   * response headers 对同个字段设置多个规则, 容易出现字段值不合理的情况, 请注意避免
+   */
   function setHeadersListener(eventType, type, tabId){
     var l = new Listener(eventType, getFilter(tabId), ['blocking', type], function(details){
       var changelist = l.changelist,

@@ -3,7 +3,8 @@
       types       = bg.getTypes(),
       allTypes    = bg.getAllTypes(),
       box         = document.getElementById('settings'),
-      reloadBtn   = document.getElementById('reload');
+      reloadBtn   = document.getElementById('reload'),
+      corsBtn     = document.getElementById('cors');
 
   allTypes.forEach(function(type){
     createOptions(type);
@@ -13,6 +14,11 @@
     bg.reloadAllListeners();
     switchBtnStatus(true);
     allTypes = types.concat();
+  });
+
+  bg.getDefaultCORS() && corsBtn.setAttribute('checked', 'true');
+  corsBtn.addEventListener('click', function(){
+    bg.setDefaultCORS(this.checked);
   });
 
   function switchBtnStatus(bool){
@@ -31,7 +37,7 @@
     label.setAttribute('for', id);
     label.innerText = type;
 
-    ~types.indexOf(type) && checkbox.setAttribute('checked', true);
+    ~types.indexOf(type) && checkbox.setAttribute('checked', 'true');
     checkbox.addEventListener('click', function(){
       bg.setTypes(type, this.checked);
       var noChange = allTypes.length === types.length && types.every(function(v){
