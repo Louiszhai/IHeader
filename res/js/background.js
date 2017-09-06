@@ -346,7 +346,7 @@
         var partMessage = data.reason == 'install' ? '安装成功' : '更新成功';
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           var tab = tabs[0];
-          if (!/chrome:\/\//.test(tab.url)){
+          if (tab && !/chrome:\/\//.test(tab.url)){
             chrome.tabs.executeScript(tab.id, {file: 'res/js/notification.js'}, function(){
               chrome.tabs.executeScript(tab.id, {code: 'notification("IHeader扩展程序'+ partMessage +'")'}, function(log){
                 log[0] && console.log('[Notification]: 成功弹出通知');
