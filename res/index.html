@@ -463,6 +463,9 @@
       border: none;
       outline: none;
     }
+    .proxy-item .text.edit {
+      color: #f79208;
+    }
     .proxy-item .icon-remove {
       display: none;
     }
@@ -515,13 +518,14 @@
         <header>
           Host Proxy Settings
           <a id="addProxyBtn" class="icon-plus icon" title="Add proxy rule"></a>
+          <input type="button" id="confirmProxyBtn" class="icon-ok icon" title="save proxy rule"/>
           <a id="settingsCloseBtn" class="icon-remove icon" title="close dialog"></a>
         </header>
         <div id="settingsContent" class="content">
           <div class="proxy-item display-none">
-            <input type="text" class="text align-right" placeholder="www.test.com"/>
+            <input type="text" class="text align-right host" placeholder="www.test.com"/>
             <a class="icon-arrow-right icon arrow-right"></a>
-            <input type="text" class="text" placeholder="127.0.0.1"/>
+            <input type="text" class="text proxy-host" placeholder="127.0.0.1"/>
             <a class="icon-remove icon"></a>
           </div>
         </div>

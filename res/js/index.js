@@ -22,6 +22,7 @@ function createView(document, bg, tabId, undefined){
     container = $('container'),
     listenerContainer = $('listener'),
     navTabs   = document.querySelector('.nav-tabs'),
+    settingsContent = $('settingsContent'),
     listenerLinks    = [],
     listenerLinkDOMs = [];
 
@@ -30,27 +31,72 @@ function createView(document, bg, tabId, undefined){
 
   /* 绑定more按钮点击事件 */
   $('more').addEventListener('click', function(){
+    var confirmBtn = $('confirmProxyBtn');
+    /* 加载代理规则 */
+    if(bg) {
+      confirmBtn.disabled = true;
+      [].forEach.call(document.querySelectorAll('.proxy-item:not(.display-none)'), function(item){
+        item.parentNode.removeChild(item);
+      });
+      var map = bg.getProxyMap();
+      Object.keys(map).forEach(function (key) {
+        var item = document.querySelector('.proxy-item').cloneNode(true);
+        var inputs = item.querySelectorAll('input');
+        inputs[0].value = key;
+        inputs[0].defaultValue = key;
+        inputs[1].value = map[key];
+        inputs[1].defaultValue = map[key];
+        setTimeout(function () {
+          settingsContent.appendChild(item.removeClass('display-none'));
+        }, 0);
+      });
+    }
+    if(!this.Clicked){
+      this.Clicked = true;
+      /* 保存代理规则 */
+      bg && confirmBtn.addEventListener('click', function(){
+        /* 获取所有的proxy规则 */
+        var map = [].reduce.call(settingsContent.querySelectorAll('.proxy-item:not(.display-none)'), function(p, item){
+          item.removeClass('add');
+          var inputs = item.querySelectorAll('input');
+          p[inputs[0].value] = inputs[1].value;
+          return p;
+        }, {});
+        bg.setProxyMap(map);
+        bg.updateProxy();
+        this.disabled = true;
+        [].forEach.call(settingsContent.querySelectorAll('.edit'), function(item){
+          item.defaultValue = item.value;
+          item.removeClass('edit');
+        });
+        showToast(document.body, '更新成功');
+      });
+      /* 关闭设置对话框 */
+      $('settingsCloseBtn').addEventListener('click', toggleSettingDialog);
+      /* 点击清除shadow background */
+      $('bg-shadow').addEventListener('click', toggleSettingDialog);
+      /* 新增代理规则 */
+      $('addProxyBtn').addEventListener('click', function(){
+        var item = document.querySelector('.proxy-item').cloneNode(true);
+        settingsContent.appendChild(item.removeClass('display-none').addClass('add'));
+      });
+      /* 移除代理规则 */
+      settingsContent.on('.icon-remove', 'click', function(){
+        var item = this.parentNode;
+        item.parentNode.removeChild(item);
+        !item.hasClass('add') && (confirmBtn.disabled = false);
+      });
+      /* 编辑后高亮 */
+      settingsContent.on('input', 'input', throttle(function(){
+        if(this.defaultValue !== this.value){
+          !this.hasClass('edit') && this.addClass('edit');
+        }else{
+          this.hasClass('edit') && this.removeClass('edit');
+        }
+        confirmBtn.disabled = false;
+      }, 200));
+    }
     toggleSettingDialog();
-  });
-
-  /* Settings dialog */
-  /* 关闭设置对话框 */
-  $('settingsCloseBtn').addEventListener('click', function(){
-    toggleSettingDialog();
-  });
-  /* 点击清除shadow background */
-  $('bg-shadow').addEventListener('click', function(){
-    toggleSettingDialog();
-  });
-  /* 新增代理规则 */
-  $('addProxyBtn').addEventListener('click', function(){
-    var item = document.querySelector('.proxy-item').cloneNode(true);
-    $('settingsContent').appendChild(item.removeClass('display-none'));
-  });
-  /* 移除代理规则 */
-  $('settingsContent').on('.icon-remove', function(){
-    var item = this.parentNode;
-    item.parentNode.removeChild(item);
   });
 
   /* 绑定tab栏点击事件 */
@@ -798,13 +844,13 @@ function createView(document, bg, tabId, undefined){
     };
 
     /* 事件委托 */
-    HTMLElement.prototype.on = function(type, fn) {
-      if (this._type != 'null_obj' && typeof type === 'string' && typeof fn === 'function') {
-        var isClass = type.indexOf('.') === 0;
-        isClass && (type = type.substring(1));
-        this.addEventListener('click', function(e){
+    HTMLElement.prototype.on = function(matchStr, event, fn) {
+      if (this._type != 'null_obj' && typeof matchStr === 'string' && typeof event === 'string' && typeof fn === 'function') {
+        var isClass = matchStr.indexOf('.') === 0;
+        isClass && (matchStr = matchStr.substring(1));
+        this.addEventListener(event, function(e){
           var item = e.target;
-          if(item && (isClass ? item.hasClass(type) : item.nodeName === type)){
+          if(item && (isClass ? item.hasClass(matchStr) : item.nodeName === matchStr.toUpperCase())){
             fn.call(item, e);
           }
         });

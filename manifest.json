@@ -13,7 +13,7 @@
   },
   "background": {
     "persistent": true,
-    "scripts": ["res/js/message.js", "res/js/background.js"]
+    "scripts": ["res/js/message.js", "res/js/background.js", "res/js/proxy.js"]
   },
   "commands": {
     "toggle_status": {
@@ -39,5 +39,5 @@
   "manifest_version": 2,
   "minimum_chrome_version": "26.0",
   "options_page": "res/options.html",
-  "permissions": [ "tabs" , "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "contextMenus", "notifications"]
+  "permissions": [ "tabs" , "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "contextMenus", "notifications", "proxy"]
 }
