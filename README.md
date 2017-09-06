@@ -4,7 +4,7 @@
 
 ![License MIT](https://img.shields.io/npm/l/express.svg)
 
-switch to [README-中文.md](https://github.com/Louiszhai/IHeader/blob/master/README_zh_CN.md)
+switch to [README_en.md](https://github.com/Louiszhai/IHeader/blob/master/README_en.md)
 
 Author: louis
 
@@ -12,15 +12,27 @@ Blog: http://louiszhai.github.io
 
 Github: http://github.com/Louiszhai/IHeader
 
-This extension is mainly used to monitor the page request and response headers, so as to add, delete, or modify the domain field. Request and response headers field changes comply with the following rules:
+该扩展主要用于监听页面请求响应头，从而达到添加、删除或修改域字段目的。请求头和响应头字段的修改符合以下规则：
 
-> Chrome on request and response headers with clear rules, that is, the console display only send out or just received field. So request after your edit field, the console network bar display properly; and edit the response after field due to do not belong to just the received field, so from the console will can't see the trace of editing, like not modified, actually editing is still valid.
+> Chrome对于请求头和响应头的展示有着明确的规定，即控制台中只展示发送出去或刚接收到的字段。因此编辑后的请求字段，控制台的network栏能够正常展示；而编辑后的响应字段由于不属于刚接收到的字段，所以从控制台上就会看不到编辑的痕迹，如同没修改过一样，实际上编辑仍然有效。
 
-For the request header, **partial Cache related fields**(Authorization、Cache-Control、Connection、Content-
+对于请求头而言，**部分缓存有关的字段**（Authorization、Cache-Control、Connection、Content-
 Length、Host、If-Modified-Since、If-None-Match、If-Range、Partial-Data、Pragma、Proxy-
-Authorization、Proxy-Connection和Transfer-Encoding) will not appear in the requested information, can be modified by adding the key with the same cover its value, but can't delete it.
+Authorization、Proxy-Connection和Transfer-Encoding）不会出现在请求信息中，可以通过添加同名的key覆盖修改其值，但是不能删除它。
 
-For the response headers, can only modify, or delete the cache related field or add fields, due to the response headers allows multiple fields exist at the same time,  so we can not cover and modify the related fields of cache.
+对于响应头而言，只能修改或删除非缓存相关字段或添加字段，由于响应头允许多个同名字段同时存在，因此无法覆盖修改缓存相关的字段。
+
+## Feature
+
+现在，IHeader支持以下功能：
+
+1. 支持request headers的增删改查。
+2. 支持Tab内request列表、已定制规则列表的搜索过滤。
+3. 支持一键清除Tab内的所有request记录。
+4. 支持新增或删除全局规则。
+5. 支持修改已定制规则的URL。
+6. 支持自动补全CORS相关的响应头，开启Tab页的监听后，相当于自动设置`Access-Control-Allow-Origin:*`。
+7. 支持域名代理-Proxy（开发中…）。
 
 ## Clone
 
@@ -30,47 +42,47 @@ git clone git@github.com:Louiszhai/IHeader.git
 
 ## Install
 
-Please install it in [IHeader - Google webstore](https://chrome.google.com/webstore/detail/iheader/polajedphjkpjbfljoabmcejpcckeked?utm_source=chrome-ntp-icon).
+请在 [IHeader - 谷歌商店](https://chrome.google.com/webstore/detail/iheader/polajedphjkpjbfljoabmcejpcckeked?utm_source=chrome-ntp-icon) 中安装它。
 
-Or making the source code download, click on the button `Load the unpacked extender` of  `chrome://extensions/` page, select source directory, in order to run on debug mode (because making source code update is timely, therefore recommend this installation).
+或者下载Github源码，点击`chrome://extensions/`页面的`加载已解压的扩展程序`按钮，选择源码目录以调试模式运行（由于Github源码更新比较及时，因此推荐这种安装方式）。
 
 ## Guide
 
-The default shortcut in IHeader extension is  `Alt+H`, press the keyboard shortcuts you can switch the state of monitor in current Tab (open or closed). If you forget shortcuts, remember there's a right-click menu can do the same thing.
+IHeader扩展默认的快捷键是`Alt+H`，按下该快捷键可以切换当前Tab监听的状态（开启或关闭）。如果你忘了快捷键，记得还有一个右键菜单可以做同样的事情。
 
-According to my set, all requests to use consistent filtering rules, the filtering rules can be set in the options page.
+根据我的设置，所有的请求使用一致的过滤规则，这些过滤规则可以在选项页面重新设置。
 
-Please note that when you modify filtering rules, the enabled listener need to restart to make new rules take effect. The above content, as shown in the figure below.
+请务必注意，当你修改过滤规则时，已经启用的监听器需要重启才能让新的规则生效。以上内容，如下图所示。
 
 ![定制过滤规则](./guide-images/IHeader-screen06.png)
 
-After listening on, extension can automatically record the request of the current page, as shown below:
+监听开启后，扩展能够自动记录当前页面的请求，如下所示：
 
 ![当前页面的请求列表](./guide-images/IHeader-screen.png)
 
-For each request list above, we can add, modify, or delete some HTTP fields to customize it.Custom rules there are two effective ways: (1) the current Tab effectively(default), (2) global effective, as shown below:
+对于以上请求列表的每项，我们都可以新增、修改或者删除一些HTTP字段来定制它。定制规则共有两种生效方式：①当前标签页有效（默认），②全局有效，如下所示：
 
 ![修改、删除或保存功能](./guide-images/IHeader-screen02.png)
 
-In addition, the request list is not always in here, by default, every time a page refresh or jump, previous  request record will be removed, you can use the check boxes to cancel the default action, thus making the request record is preserved. If you want to remove all request record immediately,  just click the remove button below.
+另外，这些请求列表不是一直在这的，默认情况下，每次页面刷新或者跳转，之前的请求记录都会被清除，你可以通过勾选多选框，来取消默认动作，从而使得这些请求记录都被保存下来。如果希望马上清除所有的请求记录，点击以下的清除按钮就行。
 
 ![新增字段、清除消息](./guide-images/IHeader-screen03.png)
 
-Request list support search function at the same time, the match requests will be filtered to show, and the matching text will be highlighted.
+请求列表同时支持搜索功能，匹配到的请求将会被筛选出来，同时匹配文本也会高亮显示。
 
 ![请求列表支持搜索](./guide-images/IHeader-screen04.png)
 
-In addition, the extension contains another TAB bar to display all the custom rules, you can select a custom rules and remove it. In order to avoid part of the request URL parameter changes cause the failure of listening, you can modify the URL of monitoring on the basis of custom. At present, for matching the request URL, support only contains match(Temporarily no introduction of regular matching, this is in order to avoid the use of complicated and inefficient in regular expressions, which affect the loading request in Chrome).
+此外，扩展包含另外一个tab栏来显示所有定制的规则，你可以选中一个定制的规则并且移除它。还可以在定制的基础上修改监听的URL，避免部分请求的URL末尾参数的变化导致监听失败。目前，对于请求URL的匹配，仅支持包含匹配（暂不引入正则匹配，这是为了避免使用中出现复杂低效的正则表达式，从而影响到Chrome中请求的加载速度）。
 
-The following, "A/M" means that the new or modified field(Cache related fields of new and modified scenes are indistinguishable, so combined show).
+以下，type值为"A/M"的意味着新增或修改的字段（缓存有关字段的新增和修改场景无法区分，所以合并展示）。
 
-"A/M" means to delete fields.
+type值为"D"的意味着删除的字段。
 
 ![查看或还原已定制的规则](./guide-images/IHeader-screen05.png)
 
-In use process if you have any questions, please feel free to give me the issue.
+使用过程中如有任何疑问或需求，欢迎随时向我提issue，喜欢请轻点star。
 
-About IHeader development train of thought and the source code parsing, please see [Chrome extension development - HTTP request header field to modify](http://louiszhai.github.io/2017/08/28/iheader/).
+IHeader的开发思路和源码解析请戳[Chrome扩展开发—定制HTTP请求响应头域](http://louiszhai.github.io/2017/08/28/iheader/)（该文章已被《程序员》杂志收录，尚未公开）。
 
 ## License
 
