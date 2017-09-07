@@ -434,6 +434,14 @@
       overflow-y: auto;
       counter-reset: section;
     }
+    .box .setting {
+      margin-top: 15px;
+      padding-left: 10px;
+      user-select: none;
+    }
+    .box .setting label {
+      cursor: pointer;
+    }
     .content .proxy-item {
       position: relative;
       padding: 6px 0 6px 20px;
@@ -521,6 +529,10 @@
           <input type="button" id="confirmProxyBtn" class="icon-ok icon" title="save proxy rule"/>
           <a id="settingsCloseBtn" class="icon-remove icon" title="close dialog"></a>
         </header>
+        <div class="setting">
+          <input type="checkbox" id="proxySwitch">
+          <label for="proxySwitch">Check to enable proxy</label>
+        </div>
         <div id="settingsContent" class="content">
           <div class="proxy-item display-none">
             <input type="text" class="text align-right host" placeholder="www.test.com"/>

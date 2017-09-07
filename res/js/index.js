@@ -38,17 +38,25 @@ function createView(document, bg, tabId, undefined){
       [].forEach.call(document.querySelectorAll('.proxy-item:not(.display-none)'), function(item){
         item.parentNode.removeChild(item);
       });
-      var map = bg.getProxyMap();
-      Object.keys(map).forEach(function (key) {
-        var item = document.querySelector('.proxy-item').cloneNode(true);
-        var inputs = item.querySelectorAll('input');
-        inputs[0].value = key;
-        inputs[0].defaultValue = key;
-        inputs[1].value = map[key];
-        inputs[1].defaultValue = map[key];
-        setTimeout(function () {
-          settingsContent.appendChild(item.removeClass('display-none'));
-        }, 0);
+      if(bg.isProxyOn){
+        var map = bg.getProxyMap();
+        Object.keys(map).forEach(function (key) {
+          var item = document.querySelector('.proxy-item').cloneNode(true);
+          var inputs = item.querySelectorAll('input');
+          inputs[0].value = key;
+          inputs[0].defaultValue = key;
+          inputs[1].value = map[key];
+          inputs[1].defaultValue = map[key];
+          setTimeout(function () {
+            settingsContent.appendChild(item.removeClass('display-none'));
+          }, 0);
+        });
+      }
+      /* 是否启用proxy */
+      $('proxySwitch').checked = localStorage.getItem('proxySwitch') === 'true';
+      $('proxySwitch').addEventListener('click', function(){
+        bg.toggleProxy(this.checked);
+        localStorage.setItem('proxySwitch', this.checked);
       });
     }
     if(!this.Clicked){

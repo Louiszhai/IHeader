@@ -8,7 +8,7 @@
     if (host in proxyMap) {
       return 'PROXY ' + proxyMap[host];
     } else {
-      return 'SYSTEM';
+      return 'AUTO_DETECT;';
     }
   };
   pac = 'var FindProxyForURL = ' + pac + ';';
@@ -30,23 +30,23 @@
     chrome.proxy.settings.set(details, callback);
     localStorage.setItem('proxyMap', JSON.stringify(proxyMap));
   };
-  //window.setProxy = function(map){
-  //  chrome.proxy.settings.clear({ scope: 'regular' }, callback);
-  //  updateProxy(map);
-  //};
-  //window.removeProxy = function(keys){
-  //  keys.forEach(function(key){
-  //    delete proxyMap[key];
-  //  });
-  //  updateProxy();
-  //};
   window.getProxyMap = function(){
     return proxyMap;
   };
   window.setProxyMap = function(map){
     proxyMap = map;
   };
-
-  var map = JSON.parse(localStorage.getItem('proxyMap') || '{}');
-  updateProxy(map);
+  window.toggleProxy = function(flag){
+    if(flag){
+      if(!window.isProxyOn){
+        var map = JSON.parse(localStorage.getItem('proxyMap') || '{}');
+        updateProxy(map);
+        window.isProxyOn = true;
+      }
+    }else if(window.isProxyOn){
+      chrome.proxy.settings.clear({ scope: 'regular' }, callback);
+      window.isProxyOn = false;
+    }
+  };
+  window.toggleProxy(localStorage.getItem('proxySwitch') === 'true');
 })(window);
