@@ -32,7 +32,7 @@ Authorization、Proxy-Connection和Transfer-Encoding）不会出现在请求信�
 4. 支持新增或删除全局规则。
 5. 支持修改已定制规则的URL。
 6. 支持自动补全CORS相关的响应头，开启Tab页的监听后，相当于自动设置`Access-Control-Allow-Origin:*`。
-7. 支持域名代理-Proxy（开发中…）。
+7. 支持域名代理-Proxy（点击扩展页面右上角——弹出Host Proxy Settings，即可定制代理）。
 
 ## Clone
 
