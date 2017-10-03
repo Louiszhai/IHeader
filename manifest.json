@@ -1,6 +1,6 @@
 {
   "name": "IHeader",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "icons": {
       "128": "res/images/lightning_green128.png",
       "32": "res/images/lightning_green.png",

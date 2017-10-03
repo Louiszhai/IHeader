@@ -336,11 +336,6 @@
           TabControler(tab.id).restore();
         });
       });
-      // 重启全局监听器
-      var globalListeners = JSON.parse(localStorage.getItem('globalListener') || '[]');
-      globalListeners.forEach(function(listener){
-        window.setModifyHeadersListener(listener.type, 'all', listener.changelist, true);
-      });
       // 动态载入Notification js文件
       setTimeout(function(){
         var partMessage = data.reason == 'install' ? '安装成功' : '更新成功';
@@ -605,4 +600,8 @@
       }
     }
   }
+  // 重启全局监听器
+  JSON.parse(localStorage.getItem('globalListener') || '[]').forEach(function(listener){
+    window.setModifyHeadersListener(listener.type, 'all', listener.changelist, true);
+  });
 })();
