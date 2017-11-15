@@ -82,7 +82,7 @@ type值为"D"的意味着删除的字段。
 
 使用过程中如有任何疑问或需求，欢迎随时向我提issue，喜欢请轻点star。
 
-IHeader的开发思路和源码解析请戳[Chrome扩展开发—定制HTTP请求响应头域](http://louiszhai.github.io/2017/08/28/iheader/)（该文章已被《程序员》杂志收录，尚未公开）。
+IHeader的开发思路和源码解析请戳[Chrome扩展开发—定制HTTP请求响应头域](http://louiszhai.github.io/2017/11/14/iheader/)（该文章已被《程序员》杂志收录）。
 
 ## License
 

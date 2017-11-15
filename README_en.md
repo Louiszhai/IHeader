@@ -70,7 +70,7 @@ The following, "A/M" means that the new or modified field(Cache related fields o
 
 In use process if you have any questions, please feel free to give me the issue.
 
-About IHeader development train of thought and the source code parsing, please see [Chrome extension development - HTTP request header field to modify](http://louiszhai.github.io/2017/08/28/iheader/).
+About IHeader development train of thought and the source code parsing, please see [Chrome extension development - HTTP request header field to modify](http://louiszhai.github.io/2017/11/14/iheader/).
 
 ## License
 
