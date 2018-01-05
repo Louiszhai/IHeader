@@ -4,7 +4,7 @@
 
 ![License MIT](https://img.shields.io/npm/l/express.svg)
 
-switch to [README_zh_CN.md](https://github.com/Louiszhai/IHeader/blob/master/README_zh_CN.md)
+switch to [README_zh_CN.md](https://github.com/Louiszhai/IHeader/)
 
 Author: louis
 
