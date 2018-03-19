@@ -28,18 +28,18 @@
     Object.assign(proxyMap, map);
     details.value.pacScript.data = 'var proxyMap = ' + JSON.stringify(proxyMap) + ';' + pac;
     chrome.proxy.settings.set(details, callback);
-    localStorage.setItem('proxyMap', JSON.stringify(proxyMap));
   };
   window.getProxyMap = function(){
     return proxyMap;
   };
   window.setProxyMap = function(map){
     proxyMap = map;
+    localStorage.setItem('proxyMap', JSON.stringify(proxyMap));
   };
   window.toggleProxy = function(flag){
     if(flag){
       if(!window.isProxyOn){
-        var map = JSON.parse(localStorage.getItem('proxyMap') || '{}');
+        var map = JSON.parse(localStorage.getItem('proxyMap'));
         updateProxy(map);
         window.isProxyOn = true;
       }
@@ -48,5 +48,12 @@
       window.isProxyOn = false;
     }
   };
-  window.toggleProxy(localStorage.getItem('proxySwitch') === 'true');
+  (function() {
+    if(localStorage.getItem('proxyMap')){
+      proxyMap = JSON.parse(localStorage.getItem('proxyMap'));
+    } else {
+      localStorage.setItem('proxyMap', '{}');
+    }
+    window.toggleProxy(localStorage.getItem('proxySwitch') === 'true');
+  })();
 })(window);
