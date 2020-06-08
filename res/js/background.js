@@ -363,7 +363,7 @@
     chrome.contextMenus.create({
       title: '切换Header监听模式',
       id: 'contextMenu-0',
-      contexts: ['all']
+      contexts: ['page_action']
     });
     
     chrome.contextMenus.onClicked.addListener(function (menu, tab){
